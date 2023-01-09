@@ -71,7 +71,7 @@ Shader "Custom/FeathersInWind_Ray3D"
 
             float2x2 Rotate(float angle)
             {
-                Float s = sin(angle), c = cos(angle);
+                float s = sin(angle), c = cos(angle);
                 return float2x2(c, -s, s, c);
             }
 
