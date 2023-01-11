@@ -24,6 +24,8 @@ Shader "Unlit/FoldingSpace"
 
             #include "UnityCG.cginc"
 
+            #define ModFix(x, y) (x - y * floor(x / y))
+
             #define PI 3.141592654
 
 
@@ -57,7 +59,7 @@ Shader "Unlit/FoldingSpace"
 
             float3 opRep(in float3 p, in float3 c)
             {
-                float3 q = fmod(p, c) - 0.5 * c;
+                float3 q = ModFix(p, c) - 0.5 * c;
                 return q;
             }
 
@@ -189,7 +191,7 @@ Shader "Unlit/FoldingSpace"
                     //pos = cam_pos + rayDir * depth;
                     //pos = cam_pos + rayDir * depth + float3(0.0, 25.0*u_time*0.159 + 25.0*pcurve(mod(u_time*0.159, 1.0), 3.0, 8.0), 0.0);
                     pos = cam_pos + rayDir * depth + float3(
-                        0.0, 35.0 * floor(_Time.y * 1.459) + 35.0 * pow(fmod(_Time.y * 1.459, 1.0), 3.0), 0.0);
+                        0.0, 35.0 * floor(_Time.y * 1.459) + 35.0 * pow(ModFix(_Time.y * 1.459, 1.0), 3.0), 0.0);
                     // pos = pos * rot(float3(0.0, _Time.y, 0.0));
                     pos = mul(rot(float3(0.0, _Time.y, 0.0)), pos);
                     //pos = cam_pos + rayDir * depth + float3(0.0, 25.0*floor(u_time*1.159) + 25.0*smoothstep(0.0, 1.0, mod(u_time*1.159, 1.0)), 0.0);
