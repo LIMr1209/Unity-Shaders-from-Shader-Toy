@@ -2,14 +2,15 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: LineAnimation
-  m_Shader: {fileID: 4800000, guid: 1b37bc860359db84cbbeb5f3654449e2, type: 3}
-  m_ShaderKeywords: 
+  m_Name: UntweetableCosmic
+  m_Shader: {fileID: 4800000, guid: b4cc3fbf97de415480e266c2176aeaf3, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -18,14 +19,13 @@ Material:
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+    m_TexEnvs: []
+    m_Ints: []
     m_Floats:
-    - _Scale: 3
-    - _Sp: 2
-    - _Speed: 4
+    - _GlowFactor: 0.05
+    - _NoOfRings: 20
+    - _OverSample: 4
+    - _RingDistance: 0.075
+    - _Speed: 1
     m_Colors: []
   m_BuildTextureStacks: []

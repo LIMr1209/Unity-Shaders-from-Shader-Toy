@@ -45,14 +45,14 @@ Shader "Unlit/ColorLineWaves1"
 
 			static fixed ZOOM = 35.0;
 
-			static fixed3 COLORS[6] = (
+			static fixed3 COLORS[6] = {
 				fixed3(0.572, 0.153, 0.561),
 				fixed3(0.071, 0.659, 0.616),
 				fixed3(0.145, 0.666, 0.886),
 				fixed3(0.969, 0.580, 0.114),
 				fixed3(0.945, 0.349, 0.165),
 				fixed3(0.980, 0.702, 0.576)
-			);
+			};
 
 			static fixed3 BG_START = fixed3(0.322, 0.301, 0.616);
 			static fixed3 BG_END = fixed3(0.980, 0.718, 0.418);
@@ -63,7 +63,7 @@ Shader "Unlit/ColorLineWaves1"
 			}
 
 			fixed3 segmentColor(fixed2 st) {
-				return COLORS[int(random(st) * fixed(COLORS.length()))];
+				return COLORS[int(random(st) * 6)];
 			}
 
 			// https://iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
@@ -94,7 +94,7 @@ Shader "Unlit/ColorLineWaves1"
 				
 				fixed3 col = fixed3(lerp(BG_START, BG_END, uv.y + 0.5));
 					
-				uv *= ROTATION;
+				uv = mul(ROTATION, uv);
 				
 				fixed light = uv.x;
 				fixed2 id = floor(uv * ZOOM);
