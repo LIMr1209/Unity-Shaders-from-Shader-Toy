@@ -3,7 +3,7 @@
 - 转换备忘单
 
   |  标题   | 预制体文件 |
-  |  ----  | ----  |
+    |  ----  | ----  |
   | vec<"n">  | float<"n"> |
   | mat<"n">  | float<"n">x<"n"> |
   | fract  | frac |
@@ -17,6 +17,7 @@
   | atan(x,y)  | atan2(y,x) |
   | fragCoord/iResolution   | i.uv or IN.uv_MainTex |
   | iResolution.xy | _ScreenParams.xy | 
+  | inversesqrt(x) | _rsqrt(x) | 
   | vec3(1) | float3(1,1,1) |
 
 - GLSL 中的 UV 坐标在顶部为 0 并向下增加，在 HLSL 中 0 在底部并向上增加，因此您可能需要在某些时候使用uv.y = 1 – uv.y。
@@ -27,6 +28,8 @@
   coordinate）。它们的起始处是窗口的左下角。如果我们的窗口是800×600的，那么一个片段的窗口空间坐标x的范围就在0到800之间，y在0到600之间。
 - 该iResolution变量是一个uniform vec3包含窗口尺寸的变量，并通过一些 openGL 代码发送到着色器。 该fragCoord变量是一个内置变量，其中包含应用着色器的像素的坐标。 更具体地说：
   fragCoord：是vec2在 X 轴上的 0 > 640 和 Y 轴上的 0 > 360 之间 iResolution：vec2X值为640，Y值为360
-- Unity float2 fragCoord = float2(i.uv.x * _ScreenParams.x, i.uv.y * _ScreenParams.y); -fmod (HLSL) 将输出一个正数 mod (GLSL)将输出一个负数 你可以定义一个宏  define ModFix(x, y) (x - y * floor(x / y))
-
+- Unity float2 fragCoord = float2(i.uv.x * _ScreenParams.x, i.uv.y * _ScreenParams.y); -fmod (HLSL) 将输出一个正数 mod (GLSL)
+  将输出一个负数 你可以定义一个宏 define ModFix(x, y) (x - y * floor(x / y))
+- mul(M, v)    M*v 矩阵M和列向量v的积
+- mul(v, M)    v* M 行向量v和矩阵M的积
 
