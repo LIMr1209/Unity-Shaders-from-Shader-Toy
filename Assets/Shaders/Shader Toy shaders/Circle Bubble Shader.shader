@@ -67,6 +67,9 @@ Shader "Custom/Bubble Circle Shader"
                 float2 uv = -1.0 + 2.0*i.vertex.xy / _ScreenParams.xy;
 	            uv.x *= _ScreenParams.x / _ScreenParams.y;
 
+                // float2 uv = i.uv;
+				// uv.x *=  1 / 1;
+
                 // background	 
 	            float3 color = float(0.8 + 0.2*uv.y);
 

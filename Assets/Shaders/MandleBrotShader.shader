@@ -1,5 +1,5 @@
 ﻿// From Art of code series
-Shader "Custom/MandleBrotShader"
+Shader "Unlit/MandleBrotShader"
 {
     Properties
     {

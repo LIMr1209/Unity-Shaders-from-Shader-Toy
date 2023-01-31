@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Unlit_AnimeHitEffect
+  m_Name: AnimeHitEffect
   m_Shader: {fileID: 4800000, guid: b03a48b2ad67b8f4caf4a5437c268d86, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4

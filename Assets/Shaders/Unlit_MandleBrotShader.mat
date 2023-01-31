@@ -2,14 +2,15 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Unlit_Looping circles
-  m_Shader: {fileID: 4800000, guid: b8ef72ea73bac22498171c82fb2ece4c, type: 3}
-  m_ShaderKeywords: 
+  m_Name: Unlit_MandleBrotShader
+  m_Shader: {fileID: 4800000, guid: 12f028a5c429eda4ebd9f135f1526a15, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -23,11 +24,17 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
-    - _LerpValue: 0.25
-    - _Power: 0.3
-    - _Radius: 0.5
-    - _Scale: 3
-    - _Speed: 1.5
-    - _Width: 1
-    m_Colors: []
+    - _Angle: 0
+    - _Color: 0.5
+    - _EscapeRadius: 20
+    - _LeavesISpeed: 4
+    - _MaxIter: 255
+    - _Repeat: 1
+    - _RotSpeed: 1
+    - _Speed: 1
+    - _Symmetry: 0
+    m_Colors:
+    - _Area: {r: 0, g: 0, b: 4, a: 4}
+  m_BuildTextureStacks: []
