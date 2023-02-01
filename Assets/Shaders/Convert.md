@@ -3,7 +3,7 @@
 - 转换备忘单
 
   |  标题   | 预制体文件 |
-  |  ----  | ----  |
+    |  ----  | ----  |
   | vec<"n">  | float<"n"> |
   | mat<"n">  | float<"n">x<"n"> |
   | fract  | frac |
@@ -30,9 +30,13 @@
   fragCoord：是vec2在 X 轴上的 0 > 640 和 Y 轴上的 0 > 360 之间 iResolution：vec2X值为640，Y值为360
 - Unity float2 fragCoord = float2(i.uv.x * _ScreenParams.x, i.uv.y * _ScreenParams.y); -fmod (HLSL) 将输出一个正数 mod (GLSL)
   将输出一个负数 你可以定义一个宏 define ModFix(x, y) (x - y * floor(x / y))
+- mul(M, N)       M*N 矩阵M和矩阵N的积
 - mul(M, v)    M*v 矩阵M和列向量v的积
 - mul(v, M)    v* M 行向量v和矩阵M的积
-
+- const 变量被定义成常量的话，在程序中，就不能再对该变量赋值，除非const和uniform，varying一起使用。const修饰的变量，需要在声明时给予一个初始值
+- static 只在声明全局变量时使用，static将使变量对程序而言成为私有的，外部不可见，不能和uniform，varying一起使用
+- uniform 用于全局变量和程序的入口函数的参数，用来定义constant buffers(常量缓存)
+  。如果用于一个非入口函数的参数，它将被忽略。这样做的目的是为了使一个函数既能作为入口函数，又能作为非入口函数。uniform的变量可以像非uniform的变量那样读写。uniform修饰符通过向外部语言提供一个机制，来提供变量的初始值是如何指定和保存的信息。
 
 ```
 
