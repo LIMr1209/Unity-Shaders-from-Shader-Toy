@@ -7307,7 +7307,7 @@ GameObject:
   - component: {fileID: 1772213667}
   - component: {fileID: 1772213666}
   m_Layer: 0
-  m_Name: Galaxy Of Universes (1)
+  m_Name: BokehParalax
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7347,7 +7347,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a5b5ba69e9989bf468b519ae87d60409, type: 2}
+  - {fileID: 2100000, guid: 10cbeb581eed6004b83a85a061192d79, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7993,7 +7993,7 @@ GameObject:
   - component: {fileID: 1904331563}
   - component: {fileID: 1904331562}
   m_Layer: 0
-  m_Name: Feathers In the wind #3D (1)
+  m_Name: FoldingSpace
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8033,7 +8033,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7bf1cbd7caeb59d43b085e1474873945, type: 2}
+  - {fileID: 2100000, guid: 7ad9f733f26ef044ea2364ce5dc59d95, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8287,7 +8287,7 @@ GameObject:
   - component: {fileID: 1983871894}
   - component: {fileID: 1983871893}
   m_Layer: 0
-  m_Name: UntweetableCosmic (1)
+  m_Name: PsychedelicSnowflake
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8327,7 +8327,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 84e056a6e86fe7744bdd121aadf0d9cf, type: 2}
+  - {fileID: 2100000, guid: 947c18053ae32b642aca7659a98e11da, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
