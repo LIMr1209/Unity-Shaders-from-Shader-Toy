@@ -1,5 +1,5 @@
-﻿// https://www.shadertoy.com/view/MsjSW3
-Shader "Unlit/Ether"
+﻿// https://www.shadertoy.com/view/msjXRK
+Shader "Unlit/Cosmic"
 {
     Properties
     {
@@ -41,7 +41,7 @@ Shader "Unlit/Ether"
             #define iChannelTime float4(_Time.y, _Time.y, _Time.y, _Time.y)
             #define iDate float4(2020, 6, 18, 30)
             #define iSampleRate (44100)
-
+            
             // Global access to uv data
             static v2f vertex_output;
 
@@ -53,41 +53,22 @@ Shader "Unlit/Ether"
                 return o;
             }
 
-            #define t _Time.y
-            float2x2 m(float a)
+            float4 frag (v2f __vertex_output) : SV_Target
             {
-                float c = cos(a), s = sin(a);
-                return transpose(float2x2(c, -s, s, c));
-            }
-
-            float map(float3 p)
-            {
-                p.xz = mul(p.xz,m(t*0.4));
-                p.xy = mul(p.xy,m(t*0.3));
-                float3 q = p*2.+t;
-                return length(p+((float3)sin(t*0.7)))*log(length(p)+1.)+sin(q.x+sin(q.z+sin(q.y)))*0.5-1.;
-            }
-
-            float4 frag (v2f i) : SV_Target
-            {
-                float2 fragCoord = i.uv * _Resolution;
-                float2 p = fragCoord.xy/iResolution.y-float2(0.9, 0.5);
-                float3 cl = ((float3)0.);
-                float d = 2.5;
-                for (int i = 0;i<=5; i++)
-                {
-                    float3 q = float3(0, 0, 5.)+normalize(float3(p, -1.))*d;
-                    float rz = map(q);
-                    float f = clamp((rz-map(q+0.1))*0.5, -0.1, 1.);
-                    float3 l = float3(0.1, 0.3, 0.4)+float3(5., 2.5, 3.)*f;
-                    cl = cl*l+smoothstep(2.5, 0., rz)*0.7*l;
-                    d += min(rz, 1.);
-                }
-                float4 fragColor = float4(cl, 1.);
-                if (_GammaCorrect) fragColor.rgb = pow(fragColor.rgb, 2.2);
-                return fragColor;
+                vertex_output = __vertex_output;
+                vertex_output.uv.y = 1 - vertex_output.uv.y;
+                vertex_output.uv.x = 1 - vertex_output.uv.x;
+                float4 O = 0;
+                float2 I = vertex_output.uv * _Resolution;
+                O *= 0.;
+                float2 r = iResolution.xy, p = mul(I-r*0.6,transpose(float2x2(1, -1, 2, 2)));
+                for (float i = 0., a;i++<30.; O += 0.2/(abs(length(I = p/(r+r-p).y)*80.-i)+40./r.y)*clamp(cos(a = atan2(I.y, I.x)*ceil(i*0.1)+_Time.y*sin(i*i)+i*i), 0., 0.6)*(cos(a-i+float4(0, 1, 2, 0))+1.))
+                ;
+                if (_GammaCorrect) O.rgb = pow(O.rgb, 2.2);
+                return O;
             }
             ENDCG
         }
     }
 }
+

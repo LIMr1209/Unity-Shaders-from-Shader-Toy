@@ -41,12 +41,6 @@ Shader "Unlit/MiracleSnowflakes"
             #define iChannelTime float4(_Time.y, _Time.y, _Time.y, _Time.y)
             #define iDate float4(2020, 6, 18, 30)
             #define iSampleRate (44100)
-            #define iChannelResolution float4x4(                      \
-                _MainTex_TexelSize.z,   _MainTex_TexelSize.w,   0, 0, \
-                _SecondTex_TexelSize.z, _SecondTex_TexelSize.w, 0, 0, \
-                _ThirdTex_TexelSize.z,  _ThirdTex_TexelSize.w,  0, 0, \
-                _FourthTex_TexelSize.z, _FourthTex_TexelSize.w, 0, 0)
-
 
             v2f vert(appdata v)
             {
@@ -240,6 +234,7 @@ Shader "Unlit/MiracleSnowflakes"
 
             float4 frag(v2f i) : SV_Target
             {
+                i.uv.y = 1 - i.uv.y;
                 float2 fragCoord = i.uv * _Resolution;
                 float time = _Time.y * 0.2;
                 res = 1. / iResolution.y;
