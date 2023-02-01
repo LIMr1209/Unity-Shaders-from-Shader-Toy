@@ -18,7 +18,7 @@
   | fragCoord/iResolution   | i.uv or IN.uv_MainTex |
   | iResolution.xy | _ScreenParams.xy | 
   | inversesqrt(x) | _rsqrt(x) | 
-  | vec3(1) | float3(1,1,1) |
+  | vec3(1) | float3(1,1,1)  or (float3)1|
 
 - GLSL 中的 UV 坐标在顶部为 0 并向下增加，在 HLSL 中 0 在底部并向上增加，因此您可能需要在某些时候使用uv.y = 1 – uv.y。
 - mainImage(out vec4 fragColor, in vec2 fragCoord)是片段着色器函数，相当于float4 mainImage(float2 fragCoord : SV_POSITION) :
