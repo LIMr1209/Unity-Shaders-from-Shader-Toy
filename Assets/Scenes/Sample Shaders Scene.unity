@@ -1524,7 +1524,7 @@ GameObject:
   - component: {fileID: 268519550}
   - component: {fileID: 268519549}
   m_Layer: 0
-  m_Name: Looping circles plane (1)
+  m_Name: GeodesicTiling
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1564,7 +1564,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7ff6bb9c978b86743af256e612787306, type: 2}
+  - {fileID: 2100000, guid: cc6b5518cc7754444a85b9642778ec25, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2250,7 +2250,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a49062abe4a9aa741a63336e8e42af93, type: 2}
+  - {fileID: 2100000, guid: bbb3631c0f42b3e4ca347ee1c047a9a2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
