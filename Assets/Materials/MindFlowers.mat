@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Unlit_Ether
-  m_Shader: {fileID: 4800000, guid: 560b5469fe8a493d9dbb1b0fd847a789, type: 3}
+  m_Name: MindFlowers
+  m_Shader: {fileID: 4800000, guid: e5708aa1c60c4dadbb3199ae4507cb84, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -21,6 +21,8 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Ints: []
-    m_Floats: []
+    m_Floats:
+    - _GammaCorrect: 1
+    - _Resolution: 1
     m_Colors: []
   m_BuildTextureStacks: []

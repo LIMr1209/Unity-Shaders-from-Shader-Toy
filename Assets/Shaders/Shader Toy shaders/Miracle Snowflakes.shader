@@ -1,13 +1,17 @@
-﻿// https://www.shadertoy.com/view/Xsd3zf
-Shader "Unlit/MiracleSnowflakes"
+﻿// https://www.shadertoy.com/view/Mdt3Df
+Shader "Unlit/test111"
 {
     Properties
     {
-        [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
-        _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
     }
     SubShader
     {
+        Tags
+        {
+            "RenderType" = "Transparent" "Queue" = "Transparent"
+        }
+        LOD 100
+
         Pass
         {
             CGPROGRAM
@@ -15,46 +19,6 @@ Shader "Unlit/MiracleSnowflakes"
             #pragma fragment frag
 
             #include "UnityCG.cginc"
-
-            struct appdata
-            {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-            };
-
-            struct v2f
-            {
-                float2 uv : TEXCOORD0;
-                float4 vertex : SV_POSITION;
-            };
-
-            // Built-in properties
-            float _GammaCorrect;
-            float _Resolution;
-
-            // GLSL Compatability macros
-            #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
-            #define texelFetch(ch, uv, lod) tex2Dlod(ch, float4((uv).xy * ch##_TexelSize.xy + ch##_TexelSize.xy * 0.5, 0, lod))
-            #define textureLod(ch, uv, lod) tex2Dlod(ch, float4(uv, 0, lod))
-            #define iResolution float3(_Resolution, _Resolution, _Resolution)
-            #define iFrame (floor(_Time.y / 60))
-            #define iChannelTime float4(_Time.y, _Time.y, _Time.y, _Time.y)
-            #define iDate float4(2020, 6, 18, 30)
-            #define iSampleRate (44100)
-            #define iChannelResolution float4x4(                      \
-                _MainTex_TexelSize.z,   _MainTex_TexelSize.w,   0, 0, \
-                _SecondTex_TexelSize.z, _SecondTex_TexelSize.w, 0, 0, \
-                _ThirdTex_TexelSize.z,  _ThirdTex_TexelSize.w,  0, 0, \
-                _FourthTex_TexelSize.z, _FourthTex_TexelSize.w, 0, 0)
-
-
-            v2f vert(appdata v)
-            {
-                v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv;
-                return o;
-            }
 
             #define iterations 15.
             #define depth 0.0125
@@ -238,51 +202,83 @@ Shader "Unlit/MiracleSnowflakes"
                 return color;
             }
 
-            float4 frag(v2f i) : SV_Target
+
+            struct appdata
             {
-                float2 fragCoord = i.uv * _Resolution;
-                float time = _Time.y * 0.2;
-                res = 1. / iResolution.y;
-                float2 p = (-iResolution.xy + 2. * fragCoord.xy) * res;
+                fixed4 vertex : POSITION;
+                fixed2 uv : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                fixed2 uv : TEXCOORD0;
+                fixed4 vertex : SV_POSITION;
+            };
+
+            v2f vert(appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.uv;
+                return o;
+            }
+
+
+            fixed4 frag(v2f i) : SV_Target
+            {
+                float2 fragCoord = i.uv * _ScreenParams;
+                float time = _Time.y * 0.2; //*0.1;
+                res = 1.0 / _ScreenParams.y;
+                float2 p = (-_ScreenParams.xy + 2.0 * fragCoord.xy) * res;
+
                 float3 rotate;
+
                 float3x3 mr;
-                float3 ray = normalize(float3(p, 2.));
+
+                float3 ray = normalize(float3(p, 2.0));
                 float3 ray1;
                 float3 ray2;
-                float3 pos = float3(0., 0., 1.);
-                float4 fragColor = float4(0., 0., 0., 0.);
-                nray = ((float3)0.);
-                nray1 = ((float3)0.);
-                nray2 = ((float3)0.);
-                float4 refcolor = ((float4)0.);
+                float3 pos = float3(0.0, 0.0, 1.0);
+
+                float4 fragColor = float4(0.0, 0.0, 0.0, 0.0);
+
+                nray = (float3)0;
+                nray1 = (float3)0;
+                nray2 = (float3)0;
+
+                float4 refcolor = (float4)0;
                 iteratorc = iterations - layers;
-                float2 addrot = ((float2)0.);
-                float mxcl = 1.;
-                float3 addpos = ((float3)0.);
-                pos.z = 1.;
-                mxc = 1.;
+
+                float2 addrot = (float2)0;
+
+                float mxcl = 1.0;
+                float3 addpos = (float3)0;
+                pos.z = 1.0;
+                mxc = 1.0;
                 radius = 0.25;
                 float mzd = (zoom - 0.1) / layers;
                 for (int i = 0; i < layersblob; i++)
                 {
-                    float2 p2 = p - ((float2)0.25) + ((float2)0.1 * float(i));
-                    ray = float3(p2, 2.) - nray * 2.;
-                    ray1 = normalize(ray + float3(0., res * 2., 0.));
-                    ray2 = normalize(ray + float3(res * 2., 0., 0.));
+                    float2 p2 = p - (float2)0.25 + (float2)(0.1 * float(i));
+                    ray = float3(p2, 2.0) - nray * 2.0;
+                    //ray = nray;//*0.6;
+                    ray1 = normalize(ray + float3(0.0, res * 2.0, 0.0));
+                    ray2 = normalize(ray + float3(res * 2.0, 0.0, 0.0));
                     ray = normalize(ray);
-                    float2 sb = ray.xy * length(pos) / dot(normalize(pos), ray) + float2(0., time);
-                    seed = floor(sb + float2(0., pos.z)) + pos.z;
+                    float2 sb = ray.xy * length(pos) / dot(normalize(pos), ray) + float2(0.0, time);
+                    seed = floor((sb + float2(0.0, pos.z))) + pos.z;
                     float3 seedn = float3(seed, pos.z);
                     sb = floor(sb);
                     if (noise3(seedn) > 0.2 && i < int(layers))
                     {
-                        powr = noise3(seedn * 10.) * 1.9 + 0.1;
-                        rotate.xy = sin((0.5 - noise3_2(seedn)) * time * 5.) * 0.3 + addrot;
-                        rotate.z = (0.5 - noise3(seedn + float3(10., 3., 1.))) * time * 5.;
+                        powr = noise3(seedn * 10.0) * 1.9 + 0.1;
+                        rotate.xy = sin((0.5 - noise3_2(seedn)) * time * 5.0) * 0.3 + addrot;
+                        rotate.z = (0.5 - noise3(seedn + float3(10.0, 3.0, 1.0))) * time * 5.0;
                         seedn.z += time * 0.5;
                         addpos.xy = sb + float2(0.25, 0.25 - time) + noise3_2(seedn) * 0.5;
                         float3 sins = sin(rotate);
                         float3 coss = cos(rotate);
+
                         mr = transpose(float3x3(float3(coss.x, 0., sins.x), float3(0., 1., 0.),
                                                 float3(-sins.x, 0., coss.x)));
                         mr = mul(transpose(float3x3(float3(1., 0., 0.), float3(0., coss.y, sins.y),
@@ -290,35 +286,38 @@ Shader "Unlit/MiracleSnowflakes"
                         mr = mul(transpose(float3x3(float3(coss.z, sins.z, 0.), float3(-sins.z, coss.z, 0.),
                                                     float3(0., 0., 1.))), mr);
 
+                        
 
                         light = mul(normalize(float3(1., 0., 1.)), mr);
+                        //float4 cc=filterFlake(fragColor,(pos+addpos)*mr,normalize(ray*mr+nray*0.1),normalize(ray1*mr+nray*0.1),normalize(ray2*mr+nray*0.1));
                         float4 cc = filterFlake(fragColor, mul(pos + addpos, mr), mul(ray, mr), mul(ray1, mr),
                                                 mul(ray2, mr));
-                        fragColor = lerp(cc, fragColor, min(1., fragColor.w));
+                        //if (i>0 && dot(nray,nray)!=0.0 && dot(nray1,nray1)!=0.0 && dot(nray2,nray2)!=0.0) refcolor=filterFlake(refcolor,(pos+addpos)*mr,nray,nray1,nray2);
+                        //cc+=refcolor*0.5;
+                        fragColor = lerp(cc, fragColor, min(1.0, fragColor.w));
                     }
-
-                    seedn = float3(sb, pos.z) + float3(0.5, 1000., 300.);
-                    if (noise3(seedn * 10.) > 0.4)
+                    seedn = float3(sb, pos.z) + float3(0.5, 1000.0, 300.0);
+                    if (noise3(seedn * 10.0) > 0.4)
                     {
-                        float raf = 0.3 + noise3(seedn * 100.);
-                        addpos.xy = sb + float2(0.2, 0.2 - time) + noise3_2(seedn * 100.) * 0.6;
+                        float raf = 0.3 + noise3(seedn * 100.0);
+                        addpos.xy = sb + float2(0.2, 0.2 - time) + noise3_2(seedn * 100.0) * 0.6;
                         float l = length(ray * dot(ray, pos + addpos) - pos - addpos);
-                        l = max(0., 1. - l * 10. * raf);
-                        fragColor.xyzw += float4(1., 1.2, 3., 1.) * pow(l, 5.) * (pow(0.6 + raf, 2.) - 0.6) * mxcl;
+                        l = max(0.0, (1.0 - l * 10.0 * raf));
+                        fragColor.xyzw += float4(1.0, 1.2, 3.0, 1.0) * pow(l, 5.0) * (pow(0.6 + raf, 2.0) - 0.6) * mxcl;
                     }
-
                     mxc -= 1.1 / layers;
                     pos.z += step;
-                    iteratorc += 2.;
+                    iteratorc += 2.0;
                     mxcl -= 1.1 / float(layersblob);
                     zoom -= mzd;
                 }
-                float3 cr = lerp(((float3)0.), float3(0., 0., 0.4), (-0.55 + p.y) * 2.);
-                fragColor.xyz += lerp((cr.xyz - fragColor.xyz) * 0.1, float3(0.2, 0.5, 1.),
-                                      clamp((-p.y + 1.) * 0.5, 0., 1.));
-                fragColor = min(((float4)1.), fragColor);
-                fragColor.a = 1.;
-                if (_GammaCorrect) fragColor.rgb = pow(fragColor.rgb, 2.2);
+
+                float3 cr = lerp((float3)0, float3(0.0, 0.0, 0.4), (-0.55 + p.y) * 2.0);
+                fragColor.xyz += lerp((cr.xyz - fragColor.xyz) * 0.1, float3(0.2, 0.5, 1.0),
+                                     clamp((-p.y + 1.0) * 0.5, 0.0, 1.0));
+
+                fragColor = min((float4)1, fragColor);
+                fragColor.a = 1.0;
                 return fragColor;
             }
             ENDCG

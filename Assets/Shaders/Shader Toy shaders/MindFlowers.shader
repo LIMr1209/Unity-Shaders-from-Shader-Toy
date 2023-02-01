@@ -1,9 +1,10 @@
 ﻿// https://www.shadertoy.com/view/DlB3WG
-Shader "Unlit/MindFlowers "
+Shader "Unlit/MindFlowers"
 {
     Properties
     {
-
+        _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
+        [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
     }
     SubShader
     {
@@ -27,20 +28,33 @@ Shader "Unlit/MindFlowers "
             #define BPM         (157.0/4.0)
             #define PCOS(a)     0.5*(cos(a)+1.0)
 
-            const float planeDist = 1.0 - 0.80;
-            const int furthest = 16;
-            // #define fadeFrom max(furthest - 4, 0)
-            const int fadeFrom = 12;
-            // #define fadeDist planeDist * float(furthest - fadeFrom)
-            const float fadeDist = 0.8;
+            static const float planeDist = 1.-0.8;
+            static const int furthest = 16;
+            static const int fadeFrom = max(furthest-4, 0);
+            static const float fadeDist = planeDist*float(furthest-fadeFrom);
+            static const float overSample = 4.;
+            static const float ringDistance = 0.075*overSample/4.;
+            static const float noOfRings = 20.*4./overSample;
+            static const float glowFactor = 0.05;
 
-            const float overSample = 4.0;
-            // #define ringDistance 0.075 * overSample / 4.0
-            const float ringDistance = 0.075;
-            // #define noOfRings 20.0 * 4.0 / overSample
-            const float noOfRings = 20.0;
-            const float glowFactor = 0.05;
-            
+
+            float _GammaCorrect;
+            float _Resolution;
+
+            // GLSL Compatability macros
+            #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
+            #define texelFetch(ch, uv, lod) tex2Dlod(ch, float4((uv).xy * ch##_TexelSize.xy + ch##_TexelSize.xy * 0.5, 0, lod))
+            #define textureLod(ch, uv, lod) tex2Dlod(ch, float4(uv, 0, lod))
+            #define iResolution float3(_Resolution, _Resolution, _Resolution)
+            #define iFrame (floor(_Time.y / 60))
+            #define iChannelTime float4(_Time.y, _Time.y, _Time.y, _Time.y)
+            #define iDate float4(2020, 6, 18, 30)
+            #define iSampleRate (44100)
+            #define iChannelResolution float4x4(                      \
+                _MainTex_TexelSize.z,   _MainTex_TexelSize.w,   0, 0, \
+                _SecondTex_TexelSize.z, _SecondTex_TexelSize.w, 0, 0, \
+                _ThirdTex_TexelSize.z,  _ThirdTex_TexelSize.w,  0, 0, \
+                _FourthTex_TexelSize.z, _FourthTex_TexelSize.w, 0, 0)
 
 
             float4 alphaBlend(float4 back, float4 front)
@@ -301,13 +315,14 @@ Shader "Unlit/MindFlowers "
 
             fixed4 frag(v2f i) : SV_Target
             {
-                float2 fragCoord = float2(i.uv.x * _ScreenParams.x, i.uv.y * _ScreenParams.y);
-                float2 q = fragCoord / _ScreenParams.xy;
+                float2 fragCoord = i.uv * _Resolution;
+                float2 q = fragCoord / iResolution.xy;
                 float2 p = -1. + 2. * q;
-                p.x *= _ScreenParams.x / _ScreenParams.y;
-
+                p.x *= iResolution.x / iResolution.y;
                 float3 col = effect(p);
-                return float4(col, 1.0);
+                float4 fragColor = float4(col, 1.);
+                if (_GammaCorrect) fragColor.rgb = pow(fragColor.rgb, 2.2);
+                return fragColor;
             }
             ENDCG
         }

@@ -3,7 +3,7 @@
 - 转换备忘单
 
   |  标题   | 预制体文件 |
-    |  ----  | ----  |
+  |  ----  | ----  |
   | vec<"n">  | float<"n"> |
   | mat<"n">  | float<"n">x<"n"> |
   | fract  | frac |
@@ -32,4 +32,24 @@
   将输出一个负数 你可以定义一个宏 define ModFix(x, y) (x - y * floor(x / y))
 - mul(M, v)    M*v 矩阵M和列向量v的积
 - mul(v, M)    v* M 行向量v和矩阵M的积
+
+
+```
+
+// https://pema.dev/glsl2hlsl/
+// GLSL Compatability macros
+#define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
+#define texelFetch(ch, uv, lod) tex2Dlod(ch, float4((uv).xy * ch##_TexelSize.xy + ch##_TexelSize.xy * 0.5, 0, lod))
+#define textureLod(ch, uv, lod) tex2Dlod(ch, float4(uv, 0, lod))
+#define iResolution float3(_Resolution, _Resolution, _Resolution)
+#define iFrame (floor(_Time.y / 60))
+#define iChannelTime float4(_Time.y, _Time.y, _Time.y, _Time.y)
+#define iDate float4(2020, 6, 18, 30)
+#define iSampleRate (44100)
+#define iChannelResolution float4x4(                      \
+    _MainTex_TexelSize.z,   _MainTex_TexelSize.w,   0, 0, \
+    _SecondTex_TexelSize.z, _SecondTex_TexelSize.w, 0, 0, \
+    _ThirdTex_TexelSize.z,  _ThirdTex_TexelSize.w,  0, 0, \
+    _FourthTex_TexelSize.z, _FourthTex_TexelSize.w, 0, 0)
+```
 
