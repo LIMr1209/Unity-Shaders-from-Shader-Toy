@@ -6,6 +6,8 @@ Shader "Unlit/Starfield"
         _MainColor("MainColor", Color) = (7, 8, 9, 0)
         _Speed("Speed",Range(0.1,10.0)) = 1.0
         _PointNum("PointNum", int) = 5
+        [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
+        _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
     }
     SubShader
     {
@@ -18,13 +20,18 @@ Shader "Unlit/Starfield"
         Pass
         {
             ZWrite Off
-            Blend SrcAlpha OneMinusSrcAlpha
+//            Blend SrcAlpha OneMinusSrcAlpha
 
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 
             #include "UnityCG.cginc"
+
+            float _GammaCorrect;
+            float _Resolution;
+
+            #define iResolution float3(_Resolution, _Resolution, _Resolution)
 
             struct appdata
             {
@@ -59,9 +66,9 @@ Shader "Unlit/Starfield"
                 //Relative star position
                 float2 p;
                        //Resolution for scaling and centering
-                float2 r = _ScreenParams.xy;
+                float2 r = iResolution.xy;
 
-                float2 fragCoord = float2(i.uv.x * _ScreenParams.x, i.uv.y * _ScreenParams.y);
+                float2 fragCoord = i.uv * iResolution;
 
                 for (float i = 0., f; i++ < 1e1;
                      //Fade toward back and attenuate lighting

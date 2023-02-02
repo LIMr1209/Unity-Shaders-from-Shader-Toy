@@ -197,7 +197,7 @@ Shader "Unlit/GeodesicTiling"
             {
                 return normalize(facePlane + uPlane * facePoint.x + vPlane * facePoint.y);
             }
-
+ 
             TriPoints3D geodesicTriPoints(float3 p, float subdivisions)
             {
                 float2 uv = icosahedronFaceCoordinates(p);

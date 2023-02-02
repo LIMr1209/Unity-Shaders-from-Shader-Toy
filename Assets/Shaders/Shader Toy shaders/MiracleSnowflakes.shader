@@ -234,9 +234,11 @@ Shader "Unlit/MiracleSnowflakes"
 
             float4 frag(v2f i) : SV_Target
             {
-                i.uv.y = 1 - i.uv.y;
-                float2 fragCoord = i.uv * _Resolution;
+                float2 fragCoord = i.uv * iResolution;
+                // float2 fragCoord = i.uv * _ScreenParams;
                 float time = _Time.y * 0.2;
+                // res = 1. / _ScreenParams.y;
+                // float2 p = (-_ScreenParams.xy + 2. * fragCoord.xy) * res;
                 res = 1. / iResolution.y;
                 float2 p = (-iResolution.xy + 2. * fragCoord.xy) * res;
                 float3 rotate;
