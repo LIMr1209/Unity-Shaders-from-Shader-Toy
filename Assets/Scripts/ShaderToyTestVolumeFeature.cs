@@ -33,11 +33,6 @@ public class ShaderToyTestVolumeFeature : ScriptableRendererFeature
                 return;
 
             var material = settings.material;
-            if (material == null)
-            {
-                return;
-            }
-
             CommandBuffer cmd = CommandBufferPool.Get("ShaderToyTest");
             cmd.Clear();
 
@@ -55,7 +50,8 @@ public class ShaderToyTestVolumeFeature : ScriptableRendererFeature
     [System.Serializable]
     public class Settings
     {
-        public Material material;
+        public Material originMaterial;
+        [HideInInspector]public Material material;
     }
 
     public Settings settings = new Settings();
@@ -68,6 +64,16 @@ public class ShaderToyTestVolumeFeature : ScriptableRendererFeature
     public override void Create()
     {
         _scriptablePass = new ShaderToyTestRenderVolumePass(settings);
+        if (settings.originMaterial)
+        {
+            settings.material = Instantiate(settings.originMaterial);
+            settings.material.SetFloat("_ScreenEffect", 1);
+            ShaderToyHelper.Instance.material = settings.material;
+        }
+        else
+        {
+            settings.material = null;
+        }
     }
 
 
@@ -75,6 +81,6 @@ public class ShaderToyTestVolumeFeature : ScriptableRendererFeature
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
         var stack = VolumeManager.instance.stack;
-        renderer.EnqueuePass(_scriptablePass); // 在渲染队列中入队
+        if(settings.material) renderer.EnqueuePass(_scriptablePass); // 在渲染队列中入队
     }
 }

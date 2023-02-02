@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
+    originMaterial: {fileID: 0}
     material: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:

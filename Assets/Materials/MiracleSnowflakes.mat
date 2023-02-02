@@ -10,7 +10,8 @@ Material:
   m_Name: MiracleSnowflakes
   m_Shader: {fileID: 4800000, guid: 8c62184f54d441cf9f25596ca6f72766, type: 3}
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _ScreenEffect
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -24,5 +25,6 @@ Material:
     m_Floats:
     - _GammaCorrect: 1
     - _Resolution: 1024
+    - _ScreenEffect: 0
     m_Colors: []
   m_BuildTextureStacks: []

@@ -5,6 +5,7 @@ Shader "Unlit/MiracleSnowflakes"
     {
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
     }
     SubShader
     {
@@ -13,7 +14,6 @@ Shader "Unlit/MiracleSnowflakes"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-
             #include "UnityCG.cginc"
 
             struct appdata
@@ -31,6 +31,7 @@ Shader "Unlit/MiracleSnowflakes"
             // Built-in properties
             float _GammaCorrect;
             float _Resolution;
+            float _ScreenEffect;
 
             // GLSL Compatability macros
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
@@ -234,13 +235,20 @@ Shader "Unlit/MiracleSnowflakes"
 
             float4 frag(v2f i) : SV_Target
             {
-                float2 fragCoord = i.uv * iResolution;
-                // float2 fragCoord = i.uv * _ScreenParams;
+                float2 fragCoord;
+                float2 p;
+                if(_ScreenEffect)
+                {
+                    fragCoord = i.uv * _ScreenParams;
+                    res = 1. / _ScreenParams.y;
+                    p = (-_ScreenParams.xy + 2. * fragCoord.xy) * res;
+                }else
+                {
+                    fragCoord = i.uv * iResolution;
+                    res = 1. / iResolution.y;
+                    p = (-iResolution.xy + 2. * fragCoord.xy) * res;
+                }
                 float time = _Time.y * 0.2;
-                // res = 1. / _ScreenParams.y;
-                // float2 p = (-_ScreenParams.xy + 2. * fragCoord.xy) * res;
-                res = 1. / iResolution.y;
-                float2 p = (-iResolution.xy + 2. * fragCoord.xy) * res;
                 float3 rotate;
                 float3x3 mr;
                 float3 ray = normalize(float3(p, 2.));

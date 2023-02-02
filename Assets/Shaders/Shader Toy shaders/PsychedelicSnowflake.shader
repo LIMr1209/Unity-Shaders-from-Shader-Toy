@@ -6,6 +6,7 @@ Shader "Unlit/PsychedelicSnowflake"
         _Mouse ("Mouse", Vector) = (0.5, 0.5, 0.5, 0.5)
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
     }
     SubShader
     {
@@ -33,6 +34,7 @@ Shader "Unlit/PsychedelicSnowflake"
             float4 _Mouse;
             float _GammaCorrect;
             float _Resolution;
+            float _ScreenEffect;
 
             // GLSL Compatability macros
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
@@ -191,15 +193,31 @@ Shader "Unlit/PsychedelicSnowflake"
 
             float4 frag(v2f i) : SV_Target
             {
-                float2 fragCoord = i.uv * _Resolution;
+                float2 fragCoord;
+                float2 uv;
+                if(_ScreenEffect)
+                {
+                    fragCoord = i.uv * _ScreenParams;
+                    uv = (fragCoord - 0.5 * _ScreenParams.xy) / _ScreenParams.y;
+                }
+                else
+                {
+                    fragCoord = i.uv * iResolution;
+                    uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+                }
                 tRot = rot2D(_Time.y * tFac);
-                float2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
                 float2 m = ((float2)0.5);
                 float2x2 rmxz = ((float2x2)0.);
                 float2x2 rmyz = ((float2x2)0.);
                 if (_Mouse.z > 0.)
                 {
-                    m = -_Mouse.xy / iResolution.xy;
+                    if(_ScreenEffect)
+                    {
+                        m = -_Mouse.xy / _ScreenParams.xy;
+                    }else
+                    {
+                        m = -_Mouse.xy / iResolution.xy;
+                    }
                     rmxz = rot2D(m.x * tau);
                     rmyz = rot2D(m.y * tau + pi);
                 }
