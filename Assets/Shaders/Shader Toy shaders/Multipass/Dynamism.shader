@@ -3,6 +3,11 @@ Shader "Unlit/Dynamism"
 {
     Properties
     {
+        _MainTex ("iChannel0", 2D) = "white" {}
+        _SecondTex ("iChannel1", 2D) = "white" {}
+        _ThirdTex ("iChannel2", 2D) = "white" {}
+        _FourthTex ("iChannel3", 2D) = "white" {}
+        _Mouse ("Mouse", Vector) = (0.5, 0.5, 0.5, 0.5)
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
     }
@@ -22,13 +27,32 @@ Shader "Unlit/Dynamism"
         };
 
         // Built-in properties
+        sampler2D _MainTex;
+        float4 _MainTex_TexelSize;
+        sampler2D _SecondTex;
+        float4 _SecondTex_TexelSize;
+        sampler2D _ThirdTex;
+        float4 _ThirdTex_TexelSize;
+        sampler2D _FourthTex;
+        float4 _FourthTex_TexelSize;
+        float4 _Mouse;
         float _GammaCorrect;
         float _Resolution;
 
         // GLSL Compatability macros
         #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
+        #define texelFetch(ch, uv, lod) tex2Dlod(ch, float4((uv).xy * ch##_TexelSize.xy + ch##_TexelSize.xy * 0.5, 0, lod))
         #define textureLod(ch, uv, lod) tex2Dlod(ch, float4(uv, 0, lod))
         #define iResolution float3(_Resolution, _Resolution, _Resolution)
+        #define iFrame (floor(_Time.y / 60))
+        #define iChannelTime float4(_Time.y, _Time.y, _Time.y, _Time.y)
+        #define iDate float4(2020, 6, 18, 30)
+        #define iSampleRate (44100)
+        #define iChannelResolution float4x4(                      \
+                _MainTex_TexelSize.z,   _MainTex_TexelSize.w,   0, 0, \
+                _SecondTex_TexelSize.z, _SecondTex_TexelSize.w, 0, 0, \
+                _ThirdTex_TexelSize.z,  _ThirdTex_TexelSize.w,  0, 0, \
+                _FourthTex_TexelSize.z, _FourthTex_TexelSize.w, 0, 0)
 
         #include "UnityCG.cginc"
 
@@ -160,9 +184,6 @@ Shader "Unlit/Dynamism"
             #define time _Time.y
             #define time2v ((1.+sin(time+sin(time*0.4+cos(time*0.1))))*1.5)
             #define time2 (time*2.1+time2v)
-            sampler2D _MainA;
-            sampler2D _MainB;
-            
 
             float2 div(float2 p, sampler2D smp)
             {
@@ -181,8 +202,8 @@ Shader "Unlit/Dynamism"
             {
                 float2 fragCoord = i.uv * _Resolution;
                 float2 p = fragCoord.xy / iResolution.xy;
-                float2 dv = div(p, _MainA);
-                float2 dv2 = div(p, _MainB);
+                float2 dv = div(p, _MainTex);
+                float2 dv2 = div(p, _SecondTex);
                 dv = pow(abs(dv), ((float2)0.5)) * sign(dv);
                 dv = clamp(dv, 0., 4.);
                 dv2 = pow(abs(dv2), ((float2)0.5)) * sign(dv2);
@@ -222,8 +243,6 @@ Shader "Unlit/Dynamism"
             #pragma vertex vert
             #pragma fragment frag
 
-            float4 _Mouse = (0.5, 0.5, 0.5, 0.5);
-
             static const float2 center = float2(0, 0);
             static const int samples = 15;
             static const float wCurveA = 1.;
@@ -231,8 +250,6 @@ Shader "Unlit/Dynamism"
             static const float dspCurveA = 2.;
             static const float dspCurveB = 1.;
             #define time _Time.y
-
-            sampler2D _MainC;
 
             float wcurve(float x, float a, float b)
             {
@@ -267,7 +284,7 @@ Shader "Unlit/Dynamism"
                     float sr2 = (float(i) + rnd) / float(samples);
                     float weight = wcurve(sr2, wCurveA, wCurveB);
                     float displ = wcurve(sr2, dspCurveA, dspCurveB);
-                    col += tex2D(_MainC, p + tc * sr2 * strength * displ).rgb * weight;
+                    col += tex2D(_ThirdTex, p + tc * sr2 * strength * displ).rgb * weight;
                     tw += 0.9 * weight;
                 }
                 col /= tw;

@@ -2112,7 +2112,7 @@ GameObject:
   - component: {fileID: 398013923}
   - component: {fileID: 398013922}
   m_Layer: 0
-  m_Name: UINoiseHalo (1)
+  m_Name: LogSpirals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2152,7 +2152,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 772c5c75a65021c4aac7845dcc3e0bad, type: 2}
+  - {fileID: 2100000, guid: c4bf5ad4a6c2b3045951280591c922b7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2994,7 +2994,7 @@ GameObject:
   - component: {fileID: 555163246}
   - component: {fileID: 555163245}
   m_Layer: 0
-  m_Name: Viscosity (1)
+  m_Name: MidnightJam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3034,7 +3034,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 55b2b3bc8bdd67c44a27cbea41bf10da, type: 2}
+  - {fileID: 2100000, guid: 0dff87b56aafe574a8d120b937d8fd4b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6379,7 +6379,7 @@ GameObject:
   - component: {fileID: 1204637118}
   - component: {fileID: 1204637117}
   m_Layer: 0
-  m_Name: GeodesicTiling (1)
+  m_Name: RainbowStar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6419,7 +6419,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: cc6b5518cc7754444a85b9642778ec25, type: 2}
+  - {fileID: 2100000, guid: 26be2457d624cd240836e32da6d6beaf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7261,7 +7261,7 @@ GameObject:
   - component: {fileID: 1376159584}
   - component: {fileID: 1376159583}
   m_Layer: 0
-  m_Name: JelloLights (1)
+  m_Name: Spirality
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7301,7 +7301,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bfc2236b687c3a84982b107758ea6a64, type: 2}
+  - {fileID: 2100000, guid: e2aedbb27df53a64aa043526569847a8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8498,8 +8498,9 @@ GameObject:
   - component: {fileID: 1545847182}
   - component: {fileID: 1545847181}
   - component: {fileID: 1545847180}
+  - component: {fileID: 1545847184}
   m_Layer: 0
-  m_Name: PsychedelicSakura (1)
+  m_Name: PearlyRopes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8539,7 +8540,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 65ef3956fcf80c241894a5df06597ada, type: 2}
+  - {fileID: 2100000, guid: ec4439af5b101ba428b868351e11415d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8584,6 +8585,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 98
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1545847184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1545847179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a07305e16da4114b61dd64d68b2a1a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Resolution: 1024
+  material: {fileID: 2100000, guid: bbb3631c0f42b3e4ca347ee1c047a9a2, type: 2}
 --- !u!1 &1565025489
 GameObject:
   m_ObjectHideFlags: 0
@@ -9773,7 +9788,7 @@ GameObject:
   - component: {fileID: 1810141660}
   - component: {fileID: 1810141659}
   m_Layer: 0
-  m_Name: ColorfulCellNoise (1)
+  m_Name: FlyingThroughStars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9813,7 +9828,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: eb48416730ca12143b6470e41bc65d6a, type: 2}
+  - {fileID: 2100000, guid: ff2cb03c50e9d754da84200c69213dd0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
