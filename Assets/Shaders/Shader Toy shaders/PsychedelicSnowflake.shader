@@ -7,6 +7,18 @@ Shader "Unlit/PsychedelicSnowflake"
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
         [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
+        
+        [Header(Extracted)]
+        maxstps ("maxstps", Float) = 100
+        maxdst ("maxdst", Float) = 100
+        mindst ("mindst", Float) = 0.001
+        pi ("pi", Float) = 3.1415927
+        tau ("tau", Float) = 6.2831855
+        IOR ("IOR", Float) = 1.45
+        den ("den", Float) = 0.2
+        i3 ("i3", Float) = 0.33333334
+        sFac ("sFac", Float) = 0.0003
+        bgprd ("bgprd", Float) = 4
     }
     SubShader
     {
@@ -54,20 +66,20 @@ Shader "Unlit/PsychedelicSnowflake"
                 return o;
             }
 
-            static const int maxstps = 100;
-            static const float maxdst = 100.;
-            static const float mindst = 0.001;
+            const int maxstps = 100;
+            const float maxdst = 100.;
+            const float mindst = 0.001;
             static const float fudge = mindst * 3.;
-            static const float pi = 3.1415927;
-            static const float tau = 6.2831855;
-            static const float IOR = 1.45;
+            const float pi = 3.1415927;
+            const float tau = 6.2831855;
+            const float IOR = 1.45;
             static const float invIOR = 1. / IOR;
-            static const float den = 0.2;
-            static const float i3 = 1. / 3.;
+            const float den = 0.2;
+            const float i3 = 1. / 3.;
             static const float pii3 = pi * i3;
             static const float tFac = 1. * tau / 6.;
-            static const float sFac = 0.0003;
-            static const float bgprd = 4.;
+            const float sFac = 0.0003;
+            const float bgprd = 4.;
             static const float sq32 = sqrt(3.) * 0.5;
             static const float negs15 = -sqrt(2.) * 0.25 * (sqrt(3.) - 1.);
             static const float negc15 = sqrt(2.) * 0.25 * (sqrt(3.) + 1.);

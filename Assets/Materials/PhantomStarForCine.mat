@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: StarNest
-  m_Shader: {fileID: 4800000, guid: d4c5dbc75d3543ff904c42490d742e11, type: 3}
+  m_Name: PhantomStarForCine
+  m_Shader: {fileID: 4800000, guid: 47775d0093894c07b515c66c31b775c6, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -24,17 +24,7 @@ Material:
     m_Floats:
     - _GammaCorrect: 1
     - _Resolution: 1024
-    - brightness: 0.0015
-    - darkmatter: 0.3
-    - distfading: 0.73
-    - formuparam: 0.53
-    - iterations: 17
-    - saturation: 0.85
-    - speed: 0.01
-    - stepsize: 0.1
-    - tile: 0.85
-    - volsteps: 20
-    - zoom: 0.8
+    - _WorldSpace: 0
     m_Colors:
-    - _Mouse: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+    - _Offset: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

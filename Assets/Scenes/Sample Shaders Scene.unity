@@ -724,7 +724,7 @@ GameObject:
   - component: {fileID: 79724997}
   - component: {fileID: 79724996}
   m_Layer: 0
-  m_Name: Rainbow Laser Beam (1)
+  m_Name: 3sKGWw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -764,7 +764,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5acbbd70227ff104583c3b440d0008ad, type: 2}
+  - {fileID: 2100000, guid: 997916caf5781454fa19831c0a238b9c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1231,7 +1231,7 @@ GameObject:
   - component: {fileID: 149452603}
   - component: {fileID: 149452607}
   m_Layer: 0
-  m_Name: Dancing Stars (1)
+  m_Name: PhantomStarForCine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1271,7 +1271,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 391777c36edbdf34799f8e9736b8773a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3303,7 +3303,7 @@ GameObject:
   - component: {fileID: 634929967}
   - component: {fileID: 634929966}
   m_Layer: 0
-  m_Name: SparksDrifting  (1)
+  m_Name: Lensing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3343,7 +3343,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5fedfeb11d97ebc4b9d57e64473fa43f, type: 2}
+  - {fileID: 2100000, guid: e5a30b5ef85130b4aac9686e0a52b4ea, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3908,7 +3908,7 @@ GameObject:
   - component: {fileID: 822654695}
   - component: {fileID: 822654694}
   m_Layer: 0
-  m_Name: The ring coloered plane (1)
+  m_Name: StarNest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4496,7 +4496,7 @@ GameObject:
   - component: {fileID: 891320090}
   - component: {fileID: 891320089}
   m_Layer: 0
-  m_Name: IceAndFire (1)
+  m_Name: Starfall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4536,7 +4536,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c445c4e5b6190e542be60a36358fb26d, type: 2}
+  - {fileID: 2100000, guid: d9552b3585134564794e5b458b0a3985, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5456,7 +5456,7 @@ GameObject:
   - component: {fileID: 1037068513}
   - component: {fileID: 1037068512}
   m_Layer: 0
-  m_Name: Tooth Pick Cover Plane (1)
+  m_Name: Unlit_PortalEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7514,7 +7514,7 @@ GameObject:
   - component: {fileID: 1387564723}
   - component: {fileID: 1387564722}
   m_Layer: 0
-  m_Name: Circulr Calender PLane Yearclock  (1)
+  m_Name: Fibres
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9747,7 +9747,7 @@ GameObject:
   - component: {fileID: 1806359543}
   - component: {fileID: 1806359542}
   m_Layer: 0
-  m_Name: Interstellar (1)
+  m_Name: Blue Star
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9787,7 +9787,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e8ceacbbd65d1f84b9c5a9baaf1ea738, type: 2}
+  - {fileID: 2100000, guid: 89904b7824af0394997b9d72b5d5c4d7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10825,7 +10825,7 @@ GameObject:
   - component: {fileID: 1986949263}
   - component: {fileID: 1986949262}
   m_Layer: 0
-  m_Name: Dance Floor Plane (1)
+  m_Name: Unlit_MandleBrotShader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
