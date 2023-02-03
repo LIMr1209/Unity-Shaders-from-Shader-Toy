@@ -191,7 +191,7 @@ float IOR;
 #endif
             }
 
-            bool iBilinearPatch(in float3 ro, in float3 rd, in float4 ps, in float4 ph, in float sz, out float t, out float3 norm, out bool si, out float tsi, out float3 normsi, out float fade, out float fadesi)
+            bool iBilinearPatch(in float3 ro, in float3 rd, in float4 ps, in float4 ph, in float sz, out float t, out float3 norm, out float si, out float tsi, out float3 normsi, out float fade, out float fadesi)
             {
                 fadesi = 0;
                 fade = 0;
@@ -206,7 +206,7 @@ float IOR;
                 float3 vd = float3(ps.xy, ph.x);
                 t = -1.;
                 tsi = -1.;
-                si = false;
+                si = 0;
                 fade = 1.;
                 fadesi = 1.;
                 norm = float3(0., 1., 0.);
@@ -275,7 +275,7 @@ float IOR;
                             
                         if (tt2>0.&&!ru&&!(step(sz, length(ro+tt2*rd))>0.5))
                         {
-                            si = true;
+                            si = 1;
                             fadesi = s;
                             tsi = tt2;
                             float3 tpos = ro+tsi*rd;
@@ -439,10 +439,10 @@ float IOR;
                 float bil_size = 1.;
                 float4 ps = float4(-bil_size, -bil_size, bil_size, bil_size)*curvature;
                 float4 ph = float4(-bil_size, bil_size, bil_size, -bil_size)*curvature;
-                float4[3] colx = vec4[3](((float4)0.), ((float4)0.), ((float4)0.));
-                float3[3] dx = vec3[3](((float3)-1.), ((float3)-1.), ((float3)-1.));
-                float4[3] colxsi = vec4[3](((float4)0.), ((float4)0.), ((float4)0.));
-                int[3] order = int[3](0, 1, 2);
+                float4 colx[3] = {(float4)0, (float4)0., (float4)0.};
+                float3 dx[3] = {(float3)-1, (float3)-1, (float3)-1};
+                float4 colxsi[3] = {(float4)0, (float4)0., (float4)0.};
+                int order[3] = {0, 1, 2};
                 for (int i = 0;i<3+ANGLE_loops; i++)
                 {
                     if (abs(nor_c.x)>0.5)
@@ -463,7 +463,7 @@ float IOR;
                     
                     float3 normnew;
                     float tnew;
-                    bool si;
+                    float si;
                     float tsi;
                     float3 normsi;
                     float fade;
@@ -570,7 +570,7 @@ float IOR;
                 }
                 
 #if !(defined(DEBUG)&&defined(BUG))
-                bool[3] rul = bool[3](dx[0].y>0.5&&dx[1].x<=0., dx[1].y>0.5&&dx[0].x>dx[1].z, dx[2].y>0.5&&dx[1].x>dx[2].z);
+                bool rul[3] = {dx[0].y>0.5&&dx[1].x<=0., dx[1].y>0.5&&dx[0].x>dx[1].z, dx[2].y>0.5&&dx[1].x>dx[2].z};
                 for (int k = 0;k<3; k++)
                 {
                     if (rul[k])
@@ -594,11 +594,10 @@ float IOR;
                 return float4(col, a);
             }
 
-            float4 frag (v2f __vertex_output) : SV_Target
+            float4 frag (v2f i) : SV_Target
             {
-                vertex_output = __vertex_output;
                 float4 fragColor = 0;
-                float2 fragCoord = vertex_output.uv * _Resolution;
+                float2 fragCoord = i.uv * _Resolution;
                 float osc = 0.5;
                 float3 l_dir = normalize(float3(0., 1., 0.));
                 l_dir = mul(l_dir,rotz(0.5));
@@ -676,7 +675,7 @@ float IOR;
                             float accum = 1.;
                             float3 no2 = ni;
                             float3 ro_refr = ro;
-                            float4[2] colo = vec4[2](((float4)0.), ((float4)0.));
+                            float4 colo[2] = {(float4)0., (float4)0.};
                             for (int j = 0;j<2+ANGLE_loops; j++)
                             {
                                 float tb;

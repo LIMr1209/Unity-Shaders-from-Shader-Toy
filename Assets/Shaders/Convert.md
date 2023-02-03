@@ -57,3 +57,16 @@
     _FourthTex_TexelSize.z, _FourthTex_TexelSize.w, 0, 0)
 ```
 
+
+```
+// 数组
+float4 _ColorSet01[6] = {
+float4(1,0,0,1),
+float4(1,1,0,1),
+float4(1,0,0,1),
+float4(1,0,1,1),
+float4(1,1,0,1),
+float4(1,0,0,1)
+};
+```
+
