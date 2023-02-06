@@ -28,7 +28,7 @@ Shader "Unlit/Lensing"
     {
         Pass
         {
-            Cull Off
+            
 
             CGPROGRAM
             #pragma vertex vert

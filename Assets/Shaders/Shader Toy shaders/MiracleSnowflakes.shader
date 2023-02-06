@@ -3,9 +3,15 @@ Shader "Unlit/MiracleSnowflakes"
 {
     Properties
     {
+        _Mouse ("Mouse", Vector) = (0.5, 0.5, 0.5, 0.5)
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
         [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
+
+        [Header(Extracted)]
+        iterations ("iterations", Range(0,15)) = 15
+        layers ("layers", Range(0,30)) = 8
+        layersblob ("layersblob", Range(0,70)) = 20
     }
     SubShader
     {
@@ -30,18 +36,13 @@ Shader "Unlit/MiracleSnowflakes"
 
             // Built-in properties
             float _GammaCorrect;
+            float4 _Mouse;
             float _Resolution;
             float _ScreenEffect;
 
             // GLSL Compatability macros
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
-            #define texelFetch(ch, uv, lod) tex2Dlod(ch, float4((uv).xy * ch##_TexelSize.xy + ch##_TexelSize.xy * 0.5, 0, lod))
-            #define textureLod(ch, uv, lod) tex2Dlod(ch, float4(uv, 0, lod))
             #define iResolution float3(_Resolution, _Resolution, _Resolution)
-            #define iFrame (floor(_Time.y / 60))
-            #define iChannelTime float4(_Time.y, _Time.y, _Time.y, _Time.y)
-            #define iDate float4(2020, 6, 18, 30)
-            #define iSampleRate (44100)
 
             v2f vert(appdata v)
             {
@@ -51,12 +52,13 @@ Shader "Unlit/MiracleSnowflakes"
                 return o;
             }
 
-            #define iterations 15.
             #define depth 0.0125
-            #define layers 8.
-            #define layersblob 20
             #define step 1.
             #define far 10000.
+
+            float iterations;
+            float layers;
+            float layersblob;
             static float radius = 0.25;
             static float zoom = 4.;
             static float3 light = float3(0., 0., 1.);
@@ -237,12 +239,13 @@ Shader "Unlit/MiracleSnowflakes"
             {
                 float2 fragCoord;
                 float2 p;
-                if(_ScreenEffect)
+                if (_ScreenEffect)
                 {
                     fragCoord = i.uv * _ScreenParams;
                     res = 1. / _ScreenParams.y;
                     p = (-_ScreenParams.xy + 2. * fragCoord.xy) * res;
-                }else
+                }
+                else
                 {
                     fragCoord = i.uv * iResolution;
                     res = 1. / iResolution.y;
@@ -262,6 +265,8 @@ Shader "Unlit/MiracleSnowflakes"
                 float4 refcolor = ((float4)0.);
                 iteratorc = iterations - layers;
                 float2 addrot = ((float2)0.);
+                if (_Mouse.z>0.)
+                    addrot = (_Mouse.xy-iResolution.xy*0.5)*res;
                 float mxcl = 1.;
                 float3 addpos = ((float3)0.);
                 pos.z = 1.;

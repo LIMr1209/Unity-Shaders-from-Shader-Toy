@@ -20,7 +20,7 @@ Shader "Unlit/HyperspaceTunne"
     {
         Pass
         {
-            Cull Off
+            
 
             CGPROGRAM
             #pragma vertex vert

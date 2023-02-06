@@ -7,7 +7,7 @@
     SubShader
     {
         // No culling or depth
-        Cull Off ZWrite Off ZTest Always
+         ZWrite Off ZTest Always
 
         Pass
         {

@@ -7,17 +7,9 @@ Shader "Unlit/PsychedelicSnowflake"
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
         [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
-        
+
         [Header(Extracted)]
-        maxstps ("maxstps", Float) = 100
-        maxdst ("maxdst", Float) = 100
-        mindst ("mindst", Float) = 0.001
-        pi ("pi", Float) = 3.1415927
-        tau ("tau", Float) = 6.2831855
-        IOR ("IOR", Float) = 1.45
-        den ("den", Float) = 0.2
         i3 ("i3", Float) = 0.33333334
-        sFac ("sFac", Float) = 0.0003
         bgprd ("bgprd", Float) = 4
     }
     SubShader
@@ -66,19 +58,20 @@ Shader "Unlit/PsychedelicSnowflake"
                 return o;
             }
 
-            const int maxstps = 100;
-            const float maxdst = 100.;
-            const float mindst = 0.001;
+            #define pi 3.1415927
+            #define tau 6.2831855
+
+            static const int maxstps = 100;
+            static const float maxdst = 100.;
+            static const float mindst = 0.001;
             static const float fudge = mindst * 3.;
-            const float pi = 3.1415927;
-            const float tau = 6.2831855;
-            const float IOR = 1.45;
+            static const float IOR = 1.45;
             static const float invIOR = 1. / IOR;
-            const float den = 0.2;
+            static const float den = 0.2;
             const float i3 = 1. / 3.;
             static const float pii3 = pi * i3;
             static const float tFac = 1. * tau / 6.;
-            const float sFac = 0.0003;
+            static const float sFac = 0.0003;
             const float bgprd = 4.;
             static const float sq32 = sqrt(3.) * 0.5;
             static const float negs15 = -sqrt(2.) * 0.25 * (sqrt(3.) - 1.);
@@ -207,7 +200,7 @@ Shader "Unlit/PsychedelicSnowflake"
             {
                 float2 fragCoord;
                 float2 uv;
-                if(_ScreenEffect)
+                if (_ScreenEffect)
                 {
                     fragCoord = i.uv * _ScreenParams;
                     uv = (fragCoord - 0.5 * _ScreenParams.xy) / _ScreenParams.y;
@@ -223,10 +216,11 @@ Shader "Unlit/PsychedelicSnowflake"
                 float2x2 rmyz = ((float2x2)0.);
                 if (_Mouse.z > 0.)
                 {
-                    if(_ScreenEffect)
+                    if (_ScreenEffect)
                     {
                         m = -_Mouse.xy / _ScreenParams.xy;
-                    }else
+                    }
+                    else
                     {
                         m = -_Mouse.xy / iResolution.xy;
                     }

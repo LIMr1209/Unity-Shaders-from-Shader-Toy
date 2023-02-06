@@ -17,7 +17,7 @@ Shader "Unlit/CubicDispersal"
     {
         Pass
         {
-            Cull Off
+            
 
             CGPROGRAM
             #pragma vertex vert

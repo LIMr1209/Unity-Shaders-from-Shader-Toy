@@ -27,7 +27,7 @@ Shader "Unlit/CubeLines"
     {
         Pass
         {
-            Cull Off
+            
 
             CGPROGRAM
 // Upgrade NOTE: excluded shader from DX11 because it uses wrong array syntax (type[size] name)

@@ -13,7 +13,7 @@ Shader "Unlit/ColorStarfield "
     {
         Pass
         {
-            Cull Off
+            
 
             CGPROGRAM
             #pragma vertex vert

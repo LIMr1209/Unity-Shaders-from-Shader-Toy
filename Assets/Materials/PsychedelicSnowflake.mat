@@ -26,7 +26,7 @@ Material:
     - _GammaCorrect: 1
     - _Resolution: 1
     - _ScreenEffect: 0
-    - bgprd: 4
+    - bgprd: 6.09
     - den: 0.2
     - i3: 0.33333334
     - maxdst: 100

@@ -3,6 +3,10 @@ Shader "Unlit/UntweetableCosmic"
 {
     Properties
     {
+        [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
+        _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
+        
         _Speed("Speed",Range(0.1,10.0)) = 1.0
         _OverSample("OverSample", float) = 4.0
         _RingDistance("RingDistance", float) = 0.075
@@ -13,20 +17,49 @@ Shader "Unlit/UntweetableCosmic"
     {
         Tags
         {
-            "RenderType" = "Transparent" "Queue" = "Transparent"
+            "RenderType" = "Opaque"
         }
         LOD 100
 
         Pass
         {
-            ZWrite Off
-            Blend SrcAlpha OneMinusSrcAlpha
 
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 
             #include "UnityCG.cginc"
+
+
+            struct appdata
+            {
+                fixed4 vertex : POSITION;
+                fixed2 uv : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                fixed2 uv : TEXCOORD0;
+                fixed4 vertex : SV_POSITION;
+            };
+
+
+            // Built-in properties
+            float _GammaCorrect;
+            float _Resolution;
+            float _ScreenEffect;
+
+            // GLSL Compatability macros
+            #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
+            #define iResolution float3(_Resolution, _Resolution, _Resolution)
+            
+            v2f vert(appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.uv;
+                return o;
+            }
 
             #define PI          3.141592654
             #define PI_2        (0.5*PI)
@@ -58,7 +91,7 @@ Shader "Unlit/UntweetableCosmic"
                 float halfsize = size * 0.5;
                 float c = floor((p + halfsize) / size);
                 // p = mod(p + halfsize, size) - halfsize;
-                p = fmod(p + halfsize, size) - halfsize;
+                p = glsl_mod(p + halfsize, size) - halfsize;
                 // p = p + halfsize - size * floor((p + halfsize) / size) - halfsize;
                 return c;
             }
@@ -113,39 +146,25 @@ Shader "Unlit/UntweetableCosmic"
             }
 
 
-            struct appdata
-            {
-                fixed4 vertex : POSITION;
-                fixed2 uv : TEXCOORD0;
-            };
-
-            struct v2f
-            {
-                fixed2 uv : TEXCOORD0;
-                fixed4 vertex : SV_POSITION;
-            };
-
-
-            v2f vert(appdata v)
-            {
-                v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv;
-                return o;
-            }
-
-
             fixed4 frag(v2f i) : SV_Target
             {
-                // i.uv.y = 1 - i.uv.y;
-                // i.uv.x = 1 - i.uv.x;
                 float2 q = i.uv;
                 float2 p = -1. + 2. * q;
-                p.x *= _ScreenParams.x / _ScreenParams.y;
+                if(_ScreenEffect)
+                {
+                    p.x *= _ScreenParams.x / _ScreenParams.y;
+                }
+                else
+                {
+                    p.x *= iResolution.x / iResolution.y;
+                }
+                
                 float3 col;
                 col = effect(p);
                 col = sqrt(col);
-                return float4(col, 1.0);
+                float4 fragColor = float4(col, 1.0);
+                if (_GammaCorrect) fragColor.rgb = pow(fragColor.rgb, 2.2);
+                return fragColor;
             }
             ENDCG
         }

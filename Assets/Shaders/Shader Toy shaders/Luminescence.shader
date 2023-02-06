@@ -13,7 +13,7 @@ Shader "Unlit/Luminescence"
     {
         Pass
         {
-            Cull Off
+            
 
             CGPROGRAM
             #pragma vertex vert

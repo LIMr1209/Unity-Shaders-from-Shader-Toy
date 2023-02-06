@@ -12,7 +12,7 @@ Shader "Unlit/Starfall"
     {
         Pass
         {
-            Cull Off
+            
 
             CGPROGRAM
             #pragma vertex vert

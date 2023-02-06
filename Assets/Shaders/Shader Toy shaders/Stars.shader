@@ -12,7 +12,7 @@ Shader "Unlit/Stars"
     {
         Pass
         {
-            Cull Off
+            
 
             CGPROGRAM
             #pragma vertex vert

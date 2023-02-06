@@ -13,7 +13,7 @@ Shader "Unlit/PrismaticSynapse"
     {
         Pass
         {
-            Cull Off
+            
 
             CGPROGRAM
             #pragma vertex vert

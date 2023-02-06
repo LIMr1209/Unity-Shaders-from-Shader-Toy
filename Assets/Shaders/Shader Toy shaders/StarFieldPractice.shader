@@ -16,7 +16,7 @@ Shader "Unlit/StarFieldPractice"
     {
         Pass
         {
-            Cull Off
+            
 
             CGPROGRAM
             #pragma vertex vert

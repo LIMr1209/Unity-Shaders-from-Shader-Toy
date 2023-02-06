@@ -19,7 +19,7 @@ Shader "Unlit/2DParallaxStarfield  "
     {
         Pass
         {
-            Cull Off
+            
 
             CGPROGRAM
             #pragma vertex vert

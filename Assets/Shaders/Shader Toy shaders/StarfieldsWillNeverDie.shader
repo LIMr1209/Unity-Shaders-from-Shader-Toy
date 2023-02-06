@@ -13,7 +13,7 @@ Shader "Unlit/StarfieldsWillNeverDie"
     {
         Pass
         {
-            Cull Off
+            
 
             CGPROGRAM
             #pragma vertex vert

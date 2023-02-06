@@ -13,7 +13,7 @@ Shader "Unlit/VoxelTunnel"
     {
         Pass
         {
-            Cull Off
+            
 
             CGPROGRAM
             #pragma vertex vert

@@ -12,7 +12,7 @@ Shader "Unlit/PhantomStarForCine"
     {
         Pass
         {
-            Cull Off
+            
 
             CGPROGRAM
             #pragma vertex vert
