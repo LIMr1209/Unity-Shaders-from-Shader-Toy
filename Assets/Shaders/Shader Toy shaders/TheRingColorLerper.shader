@@ -1,13 +1,18 @@
 //https://www.shadertoy.com/view/WtG3RD
-
-Shader "Custom/The ring color lerper"
+Shader "Custom/TheRingColorLerper"
 {
 
 	Properties
 	{
+		[Header(General)]
+        [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
+        _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
+
+		
+		[Header(Extracted)]
 		_ColorRange("Color Range",Range(1,256)) = 255
 		_BlackColor("RGB Color Intensity",Vector) = (16,21,25)
-
 		_speed1("Speed 1",Range(0.0,5.0)) = 0.525
 		_speed2("Speed 2",Range(0.0,5.0)) = 3.0
 		_speed3("Speed 3",Range(0.0,5.0)) = 1.0
@@ -15,32 +20,46 @@ Shader "Custom/The ring color lerper"
 
 	SubShader
 	{
-		Tags { "RenderType" = "Transparent" "Queue" = "Transparent" }
+		Tags { "RenderType" = "Opaque" }
 
 		Pass
 		{
-			ZWrite Off
-			Blend SrcAlpha OneMinusSrcAlpha
-
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
 			
 			#include "UnityCG.cginc"
 
-			struct VertexInput 
-			{
-				fixed4 vertex : POSITION;
-				fixed2 uv:TEXCOORD0;			
-			};
+			struct appdata
+            {
+                fixed4 vertex : POSITION;
+                fixed2 uv : TEXCOORD0;
+            };
 
+            struct v2f
+            {
+                fixed2 uv : TEXCOORD0;
+                fixed4 vertex : SV_POSITION;
+            };
 
-			struct VertexOutput
-			{
-				fixed4 pos : SV_POSITION;
-				fixed2 uv:TEXCOORD0;
-			};
+			// Built-in properties
+            float _GammaCorrect;
+            float _Resolution;
+            float _ScreenEffect;
 
+            // GLSL Compatability macros
+            #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
+            #define iResolution float3(_Resolution, _Resolution, _Resolution)
+
+			v2f vert(appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.uv;
+                return o;
+            }
+
+			
 			int _ColorRange;
 			fixed4 _BlackColor;
 
@@ -82,17 +101,18 @@ Shader "Custom/The ring color lerper"
 				return dot(fixed4(31.316,31.316,31.316,31.316), n);
 			}
 
-			VertexOutput vert (VertexInput v)
-			{
-				VertexOutput o;
-				o.pos = UnityObjectToClipPos (v.vertex);
-				o.uv = v.uv;
-				return o;
-			}
 			
-			fixed4 frag(VertexOutput i) : SV_Target
+			fixed4 frag(v2f i) : SV_Target
 			{			
 				fixed2 uv = (i.uv-1*0.5);
+				if(_ScreenEffect)
+                {
+                    uv.x *= _ScreenParams.x / _ScreenParams.y;
+                }
+                else
+                {
+                    uv.x *= iResolution.x / iResolution.y;
+                }
 					
 				fixed a = sin(atan2( uv.x,uv.y));
 				fixed am = abs(a-.5)/4.;
@@ -111,8 +131,10 @@ Shader "Custom/The ring color lerper"
 				//m = clamp(m, 0., 1.);
 				
 				fixed3 col = lerp(BLACK_COL, (0.5 + 0.5*cos(_Time.y*_speed3 +uv.xyx*3.+fixed3(0,2,4))), m);
-						
-				return fixed4(col, 1.);
+
+				float4 fragColor = float4(col, 1);
+				if (_GammaCorrect) fragColor.rgb = pow(fragColor.rgb, 2.2);
+				return fragColor;
 			}
 			ENDCG
 		}

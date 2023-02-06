@@ -22,8 +22,10 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _PointNum: 5
-    - _Speed: 1
+    - _GammaCorrect: 1
+    - _PointNum: 9.5
+    - _Resolution: 1
+    - _Speed: 10
     m_Colors:
-    - _MainColor: {r: 0.26461315, g: 0, b: 1, a: 0}
+    - _MainColor: {r: 0.2164471, g: 0.754717, b: 0.36431172, a: 0}
   m_BuildTextureStacks: []

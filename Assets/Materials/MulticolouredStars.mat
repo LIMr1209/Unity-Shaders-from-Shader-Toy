@@ -22,7 +22,7 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _GammaCorrect: 1
+    - _GammaCorrect: 0
     - _Resolution: 1
     - blackholeIntensity: 1
     - blackholeRadius: 1.2

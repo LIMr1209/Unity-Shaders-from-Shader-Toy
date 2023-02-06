@@ -27,9 +27,12 @@ Material:
     m_Ints: []
     m_Floats:
     - _Flare: 1
+    - _GammaCorrect: 1
     - _GlowDistance: 1.5
     - _NumLayers: 4
+    - _Resolution: 1
     - _Scale: 1.5
+    - _ScreenEffect: 0
     - _Speed: 0.1
     - _StarCrossLines: 1000
     - _StarISize: 0.05

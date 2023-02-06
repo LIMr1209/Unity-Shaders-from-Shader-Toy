@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: The ring color lerper
+  m_Name: TheRingColorLerper
   m_Shader: {fileID: 4800000, guid: b206c7ec1d764f541a2f2ac892a7400f, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -22,10 +22,13 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _ColorRange: 255
-    - _speed1: 0.525
-    - _speed2: 3
-    - _speed3: 1
+    - _ColorRange: 256
+    - _GammaCorrect: 1
+    - _Resolution: 1
+    - _ScreenEffect: 0
+    - _speed1: 3.24
+    - _speed2: 5
+    - _speed3: 5
     m_Colors:
     - _BlackColor: {r: 16, g: 21, b: 25, a: 1}
   m_BuildTextureStacks: []

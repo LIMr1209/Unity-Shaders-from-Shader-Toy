@@ -22,10 +22,13 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
+    - _GammaCorrect: 1
     - _GlowFactor: 0.05
     - _NoOfRings: 20
     - _OverSample: 4
+    - _Resolution: 1
     - _RingDistance: 0.075
+    - _ScreenEffect: 0
     - _Speed: 1
     m_Colors: []
   m_BuildTextureStacks: []

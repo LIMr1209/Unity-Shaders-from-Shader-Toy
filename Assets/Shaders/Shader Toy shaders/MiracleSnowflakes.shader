@@ -3,6 +3,7 @@ Shader "Unlit/MiracleSnowflakes"
 {
     Properties
     {
+        [Header(General)]
         _Mouse ("Mouse", Vector) = (0.5, 0.5, 0.5, 0.5)
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1

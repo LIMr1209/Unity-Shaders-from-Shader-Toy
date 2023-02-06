@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    originMaterial: {fileID: 0}
+    originMaterial: {fileID: 2100000, guid: bc93a74988917bb44843cdf83702d4e8, type: 2}
     material: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:

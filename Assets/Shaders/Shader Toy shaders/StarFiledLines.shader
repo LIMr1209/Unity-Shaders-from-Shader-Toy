@@ -3,8 +3,13 @@ Shader "Unlit/StarFiledLines"
 {
     Properties
     {
-        //_MainTex ("Texture", 2D) = "white" {}
+        [Header(General)]
+        [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
+        _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
 
+
+        [Header(Extracted)]
         _Scale("Scale XY max min",vector) = (10.0,0.5,0.0,0.0)
         _FadeVal("Fade length XY", Vector) = (1.2,0.8,0,0)
         _CFSpeed("Circle Fade Speed",Range(0.1,20.0)) = 5.0
@@ -36,8 +41,15 @@ Shader "Unlit/StarFiledLines"
                 float4 vertex : SV_POSITION;
             };
 
-           // sampler2D _MainTex;
-            //float4 _MainTex_ST;
+             // Built-in properties
+            float _GammaCorrect;
+            float _Resolution;
+            float _ScreenEffect;
+
+            // GLSL Compatability macros
+            #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
+            #define iResolution float3(_Resolution, _Resolution, _Resolution)
+
 
             fixed2 _Scale;
             fixed2 _FadeVal;
@@ -128,14 +140,19 @@ Shader "Unlit/StarFiledLines"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                // sample the texture
-                //fixed4 col = tex2D(_MainTex, i.uv);
 
-                fixed2 uv = (i.uv - 0.5);
+                float2 uv = (i.uv - 0.5);   // -0.5 - 0.5
+                if(_ScreenEffect)
+                {
+                    uv.x *= _ScreenParams.x / _ScreenParams.y;
+                }
+                else
+                {
+                    uv.x *= iResolution.x / iResolution.y;
+                }
                 fixed gradient = uv.y;
                 fixed3 col = fixed3(0.0,0.0,0.0);
 
-                //fixed d = DistLine(uv,fixed2(0.0,0.0), fixed2(1.0,1.0));//distance
                 fixed m = 0.0;
                 fixed t = _Time.y *0.1;
 
@@ -155,9 +172,9 @@ Shader "Unlit/StarFiledLines"
                 col = baseColor * m;
                 col += gradient * baseColor;
 
-                //col.rg = gv; // to see grid debug
-                //if(gv.x > 0.48 || gv.y > 0.48) col = fixed3(1,0,0);
-                return fixed4(col,1.0);
+                float4 fragColor = float4(col, 1.0);
+                if (_GammaCorrect) fragColor.rgb = pow(fragColor.rgb, 2.2);
+                return fragColor;
             }
             ENDCG
         }

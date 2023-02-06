@@ -1005,6 +1005,38 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 37
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!21 &94956992
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: The ring color lerper(Clone)
+  m_Shader: {fileID: 4800000, guid: b206c7ec1d764f541a2f2ac892a7400f, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _ColorRange: 256
+    - _GammaCorrect: 1
+    - _Resolution: 1
+    - _ScreenEffect: 1
+    - _speed1: 3.24
+    - _speed2: 5
+    - _speed3: 5
+    m_Colors:
+    - _BlackColor: {r: 16, g: 21, b: 25, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &106462536
 GameObject:
   m_ObjectHideFlags: 0
@@ -5953,34 +5985,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 49
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!21 &947986007
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: PsychedelicSnowflake(Clone)
-  m_Shader: {fileID: 4800000, guid: 5f188269983e4f4391657b2937ff6f5d, type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _GammaCorrect: 1
-    - _Resolution: 1
-    - _ScreenEffect: 1
-    m_Colors:
-    - _Mouse: {r: 0.5, g: 0.5, b: 0.5, a: 0}
-  m_BuildTextureStacks: []
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -6128,7 +6132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4783403b880d4c38962580a643be58ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 947986007}
+  material: {fileID: 94956992}
 --- !u!1 &1001699083
 GameObject:
   m_ObjectHideFlags: 0
@@ -6338,7 +6342,7 @@ GameObject:
   - component: {fileID: 1028242891}
   - component: {fileID: 1028242890}
   m_Layer: 0
-  m_Name: StarField Plane
+  m_Name: StarFiledLines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

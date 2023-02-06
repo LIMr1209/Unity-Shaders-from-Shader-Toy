@@ -3,10 +3,12 @@ Shader "Unlit/UntweetableCosmic"
 {
     Properties
     {
+        [Header(General)]
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
         [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
         
+        [Header(Extracted)]
         _Speed("Speed",Range(0.1,10.0)) = 1.0
         _OverSample("OverSample", float) = 4.0
         _RingDistance("RingDistance", float) = 0.075
@@ -149,7 +151,7 @@ Shader "Unlit/UntweetableCosmic"
             fixed4 frag(v2f i) : SV_Target
             {
                 float2 q = i.uv;
-                float2 p = -1. + 2. * q;
+                float2 p = -1. + 2. * q;  // uv -1 1
                 if(_ScreenEffect)
                 {
                     p.x *= _ScreenParams.x / _ScreenParams.y;

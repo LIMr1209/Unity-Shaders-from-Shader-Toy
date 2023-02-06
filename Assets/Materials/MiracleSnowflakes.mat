@@ -26,5 +26,12 @@ Material:
     - _GammaCorrect: 0
     - _Resolution: 1024
     - _ScreenEffect: 0
-    m_Colors: []
+    - depth: 0.0125
+    - far: 10000
+    - iterations: 15
+    - layers: 8
+    - layersblob: 20
+    - step: 1
+    m_Colors:
+    - _Mouse: {r: 0.5, g: 0.5, b: 1, a: 0.5}
   m_BuildTextureStacks: []

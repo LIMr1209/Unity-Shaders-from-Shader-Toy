@@ -4,6 +4,13 @@ Shader "Custom/Colourful Waves"
 
 	Properties
 	{
+		[Header(General)]
+		[ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
+		_Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
+		
+		
+		[Header(Extracted)]
 		_Speed("Color Speed" ,Range(0.0,1.0)) = 0.02
 		_WaveSpeed("Wave Speed" ,Range(-1.0,1.0)) = 0.1
 		_WavesNumber("Waves number" ,Range(0.1,20.0)) = 8.0
@@ -13,37 +20,52 @@ Shader "Custom/Colourful Waves"
 
 		_ColorPaletteA("Color Palette A", Color) = (0.5, 0.5, 0.5)
 		_ColorPaletteB("Color Palette B", Color) = (0.5, 0.5, 0.5)
-		_ColorPaletteC("Color Palette C", Color) = (2., 1., 0.)
+		_ColorPaletteC("Color Palette C", Color) = (0.74, 0.37, 1.)
 		_ColorPaletteD("Color Palette D", Color) = (0.5, 0.2, 0.25)
 	}
 
 	SubShader
 	{
-		Tags { "RenderType" = "Transparent" "Queue" = "Transparent" }
+		Tags { "RenderType"="Opaque" }
 
 		Pass
 		{
-			ZWrite Off
-			Blend SrcAlpha OneMinusSrcAlpha
-
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
 
 			#include "UnityCG.cginc"
 
-			struct VertexInput 
-			{
-				fixed4 vertex : POSITION;
-				fixed2 uv:TEXCOORD0;
-			};
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
 
-			struct VertexOutput
-			 {
-				fixed4 pos : SV_POSITION;
-				fixed2 uv:TEXCOORD0;
-			};
+            struct v2f
+            {
+                float2 uv : TEXCOORD0;
+                float4 vertex : SV_POSITION;
+            };
 
+			 // Built-in properties
+			float _GammaCorrect;
+            float _Resolution;
+            float _ScreenEffect;
+
+			// GLSL Compatability macros
+            #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
+            #define iResolution float3(_Resolution, _Resolution, _Resolution)
+
+
+			v2f vert(appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.uv;
+                return o;
+            }
+			
 			fixed _Speed;
 			fixed _WaveSpeed;
 			int _WavesNumber;
@@ -76,15 +98,8 @@ Shader "Custom/Colourful Waves"
 				return colorPalette(x, _ColorPaletteA, _ColorPaletteB, _ColorPaletteC, _ColorPaletteD);
 			}
 
-			VertexOutput vert (VertexInput v)
-			{
-				VertexOutput o;
-				o.pos = UnityObjectToClipPos (v.vertex);
-				o.uv = v.uv;
-				return o;
-			}
 			
-			fixed4 frag(VertexOutput i) : SV_Target
+			fixed4 frag(v2f i) : SV_Target
 			{
 			
 				fixed4 fragColor = 0;
@@ -108,7 +123,8 @@ Shader "Custom/Colourful Waves"
 					fragColor.xyz = lerp(fragColor.xyz, col, smoothstep(0., aa, waveTop));
 				
 				}
-				fragColor.w = 1.0;
+				fragColor.a = 1.0;
+				if (_GammaCorrect) fragColor.rgb = pow(fragColor.rgb, 2.2);
 				return fragColor;
 			}
 			ENDCG
