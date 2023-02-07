@@ -31,10 +31,10 @@ Material:
     - _GlowDistance: 1.5
     - _NumLayers: 4
     - _Resolution: 1
-    - _Scale: 1.5
+    - _Scale: 15.4
     - _ScreenEffect: 0
-    - _Speed: 0.1
-    - _StarCrossLines: 1000
+    - _Speed: 1.33
+    - _StarCrossLines: 340
     - _StarISize: 0.05
     m_Colors: []
   m_BuildTextureStacks: []

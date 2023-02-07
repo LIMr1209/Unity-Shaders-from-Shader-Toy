@@ -23,6 +23,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _GammaCorrect: 1
+    - _Iterations: 18
     - _Resolution: 1024
-    m_Colors: []
+    - _ScreenEffect: 0
+    - _Speed: 1
+    m_Colors:
+    - _MainColor: {r: 0.116464645, g: 1.0592737, b: 0.56568545, a: 0}
   m_BuildTextureStacks: []

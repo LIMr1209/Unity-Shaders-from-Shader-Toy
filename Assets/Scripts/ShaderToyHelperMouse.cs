@@ -1,20 +1,19 @@
 ﻿using UnityEngine;
 
-
-public class ShaderToyHelper : MonoBehaviour
+public class ShaderToyHelperMouse : MonoBehaviour
 {
-    private static ShaderToyHelper _instance;
+    private static ShaderToyHelperMouse _instance;
     [HideInInspector] public Material material = null;
 
     private bool _isDragging;
-    
-    public static ShaderToyHelper Instance
+
+    public static ShaderToyHelperMouse Instance
     {
         get
         {
             if (_instance == null)
             {
-                _instance = FindObjectOfType(typeof(ShaderToyHelper)) as ShaderToyHelper;
+                _instance = FindObjectOfType(typeof(ShaderToyHelperMouse)) as ShaderToyHelperMouse;
             }
 
             return _instance;

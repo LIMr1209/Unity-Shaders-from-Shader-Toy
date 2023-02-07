@@ -6,13 +6,18 @@ Shader "Unlit/Starfall"
         [Header(General)]
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
 
+
+        [Header(Extracted)]
+        [HDR]_MainColor("MainColor", Color) = (1, 1, 2, 0)
+        _Iterations ("Iterations", Range(1,18)) = 18
+        _Speed("Speed", range(0.1, 10)) = 1
     }
     SubShader
     {
         Pass
         {
-            
 
             CGPROGRAM
             #pragma vertex vert
@@ -35,49 +40,55 @@ Shader "Unlit/Starfall"
             // Built-in properties
             float _GammaCorrect;
             float _Resolution;
+            float _ScreenEffect;
 
             // GLSL Compatability macros
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
-            #define texelFetch(ch, uv, lod) tex2Dlod(ch, float4((uv).xy * ch##_TexelSize.xy + ch##_TexelSize.xy * 0.5, 0, lod))
-            #define textureLod(ch, uv, lod) tex2Dlod(ch, float4(uv, 0, lod))
             #define iResolution float3(_Resolution, _Resolution, _Resolution)
-            #define iFrame (floor(_Time.y / 60))
-            #define iChannelTime float4(_Time.y, _Time.y, _Time.y, _Time.y)
-            #define iDate float4(2020, 6, 18, 30)
-            #define iSampleRate (44100)
 
-            v2f vert (appdata v)
+            v2f vert(appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv =  v.uv;
+                o.uv = v.uv;
                 return o;
             }
 
-            
-            #define F for(float i = .1; i <.9; i+=.04)
+
+            float4 _MainColor;
+            float _Speed;
+            float _Iterations;
 
 
-            float4 frag (v2f i) : SV_Target
+            float4 frag(v2f i) : SV_Target
             {
                 float4 f = 0;
-                float2 u = i.uv * _Resolution;
-                u /= iResolution.y;
-                f -= f;
-                for (float i = 0.1;i<0.9; i += 0.04)
+                float2 u;
+                if (_ScreenEffect)
                 {
-                    float3 p = float3(u+(_Time.y/i-i)/float2(30, 10), i);
-                    p = abs(1.-glsl_mod(p, 2.));
+                    u = i.uv * _ScreenParams;
+                    u /= _ScreenParams.y;
+                }
+                else
+                {
+                    u = i.uv * iResolution;
+                    u /= iResolution.y;
+                }
+                float maxIterations = 0.1 + _Iterations * 0.04;
+                for (float i = 0.1; i < maxIterations; i += 0.04)
+                {
+                    float3 p = float3(u + (_Time.y * _Speed / i - i) / float2(30, 10), i);
+                    p = abs(1. - glsl_mod(p, 2.));
                     float a = length(p), b, c = 0.;
-                    for (float i = 0.1;i<0.9; i += 0.04)
-                    p = abs(p)/a/a-0.57, (b = length(p), (c += abs(a-b), a = b));
+                    for (float i = 0.1; i < 0.9; i += 0.04)
+                        p = abs(p) / a / a - 0.57, (b = length(p), (c += abs(a - b), a = b));
                     c *= c;
-                    f += c*float4(i, 1, 2, 0)/30000.;
+                    // f += c/30000. * float4(i, 1, 2, 0);
+                    f += c / 30000. * _MainColor;
                 }
                 if (_GammaCorrect) f.rgb = pow(f.rgb, 2.2);
                 return f;
             }
-            
             ENDCG
         }
     }

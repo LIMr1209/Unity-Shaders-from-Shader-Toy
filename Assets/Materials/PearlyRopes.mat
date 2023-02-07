@@ -25,5 +25,6 @@ Material:
     - _GammaCorrect: 0
     - _Resolution: 1024
     m_Colors:
+    - _MainColor: {r: 3.135271, g: 3.8199854, b: 0.0180188, a: 0}
     - _Mouse: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
   m_BuildTextureStacks: []

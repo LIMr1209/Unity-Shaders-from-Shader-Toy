@@ -6,14 +6,19 @@ Shader "Unlit/ColorStarfield "
         [Header(General)]
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
         _Mouse ("Mouse", Vector) = (0.5, 0.5, 0.5, 0.5)
+
+        [Header(Extracted)]
+        _Speed("Speed", range(0.1, 10)) = 1
+        _Iterations ("Iterations", Range(1,10)) = 5
 
     }
     SubShader
     {
         Pass
         {
-            
+
 
             CGPROGRAM
             #pragma vertex vert
@@ -37,6 +42,7 @@ Shader "Unlit/ColorStarfield "
             float _GammaCorrect;
             float _Resolution;
             float4 _Mouse;
+            float _ScreenEffect;
 
             // GLSL Compatability macros
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
@@ -50,43 +56,71 @@ Shader "Unlit/ColorStarfield "
                 return o;
             }
 
-            #define PI 3.141592             
+            float _Speed;
+            float _Iterations;
+
+            #define PI 3.141592
             #define TIMER(sec, min, max) (glsl_mod(_Time.y, sec)*(max-min)/sec+min)
+
             float2x2 mm2(in float a)
             {
                 float c = cos(a), s = sin(a);
                 return transpose(float2x2(c, s, -s, c));
             }
 
-            float4 frag (v2f i) : SV_Target
+            float4 frag(v2f i) : SV_Target
             {
-                float2 fragCoord = i.uv * _Resolution;
-                float2 uv = fragCoord.xy/iResolution.xy-((float2)0.5);
-                uv.x *= iResolution.x/iResolution.y;
                 float2 mouse = _Mouse.xy;
-                if (!all((mouse) == (((float2)0.))))
+                float2 uv;
+                if (_ScreenEffect)
                 {
-                    mouse = float2(mouse.x/iResolution.x-0.5, mouse.y/iResolution.y-0.5);
-                    mouse.x *= iResolution.x/iResolution.y;
+                    float2 fragCoord = i.uv * _ScreenParams;
+                    uv = fragCoord.xy / _ScreenParams.xy - ((float2)0.5);
+                    uv.x *= _ScreenParams.x / _ScreenParams.y;
+                    if (!all(mouse == (float2)0.) && _Mouse.z == 1)
+                    {
+                        mouse = float2(mouse.x / _ScreenParams.x - 0.5, mouse.y / _ScreenParams.y - 0.5);
+                        mouse.x *= _ScreenParams.x / _ScreenParams.y;
+                    }else
+                    {
+                        mouse = (float2)0;
+                    }
                 }
-                
-                float3 color = ((float3)0.);
-                float3 ray = float3(uv-mouse, 0.75);
-                ray.xy = mul(ray.xy,mm2(TIMER(15., 0., -PI*2.)));
-                float3 s = ray/max(abs(ray.x), abs(ray.y))*0.4;
-                float3 p = s;
-                for (int i = 0;i<5; i++)
+                else
                 {
-                    float2 nos1 = ((float2)floor(p.xy*30.334));
+                    float2 fragCoord = i.uv * iResolution;
+                    uv = fragCoord.xy / iResolution.xy - ((float2)0.5);
+                    uv.x *= iResolution.x / iResolution.y;
+                    if (!all(mouse == (float2)0.) && _Mouse.z == 1)
+                    {
+                        mouse = float2(mouse.x / iResolution.x - 0.5, mouse.y / iResolution.y - 0.5);
+                        mouse.x *= iResolution.x / iResolution.y;
+                    }else
+                    {
+                        mouse = (float2)0;
+                    }
+                }
+
+
+                float3 color = ((float3)0.);
+                float3 ray = float3(uv - mouse, 0.75);
+                ray.xy = mul(ray.xy, mm2(TIMER(15., 0., -PI*2.)));
+                float3 s = ray / max(abs(ray.x), abs(ray.y)) * 0.4;
+                float3 p = s;
+                for (int i = 0; i < _Iterations; i++)
+                {
+                    float2 nos1 = ((float2)floor(p.xy * 30.334));
                     const float2 nos2 = float2(12.9898, 78.233);
                     const float nos3 = 43758.547;
-                    float3 nc = float3(frac(sin(dot(nos1, nos2))*nos3), frac(sin(dot(nos1, nos2*0.5))*nos3), frac(sin(dot(nos1, nos2*0.25))*nos3));
-                    float n = frac(sin(dot(nos1, nos2*2.))*nos3);
-                    float z = frac(cos(n)-sin(n)-_Time.y*0.2);
-                    float d = 1.-abs(30.*z-p.z);
-                    float sz = 1./s.z;
-                    float3 c = float3(sin(max(0., d*(sz*nc.r))), sin(max(0., d*(sz*nc.g))), sin(max(0., d*(sz*nc.b))));
-                    color += (1.-z)*c;
+                    float3 nc = float3(frac(sin(dot(nos1, nos2)) * nos3), frac(sin(dot(nos1, nos2 * 0.5)) * nos3),
+                                       frac(sin(dot(nos1, nos2 * 0.25)) * nos3));
+                    float n = frac(sin(dot(nos1, nos2 * 2.)) * nos3);
+                    float z = frac(cos(n) - sin(n) - _Time.y * _Speed * 0.2);
+                    float d = 1. - abs(30. * z - p.z);
+                    float sz = 1. / s.z;
+                    float3 c = float3(sin(max(0., d * (sz * nc.r))), sin(max(0., d * (sz * nc.g))),
+                                      sin(max(0., d * (sz * nc.b))));
+                    color += (1. - z) * c;
                     p += s;
                 }
                 float4 fragColor = float4(max(((float3)0.), min(((float3)1.), color)), 1.);

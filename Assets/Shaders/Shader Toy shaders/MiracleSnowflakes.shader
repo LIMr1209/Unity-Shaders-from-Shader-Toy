@@ -10,8 +10,13 @@ Shader "Unlit/MiracleSnowflakes"
         [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
 
         [Header(Extracted)]
+        _FlowerColor("FlowerColor", Color) = (0.0, 0.4, 1.0)
+        _BackGroundTopColor("BackGroundTopColor", Color) = (0., 0., 0.4)
+        _BackGroundBottomColor("BackGroundBottomColor", Color) = (0.2, 0.5, 1.)
+        _Zoom("Zoom", Range(1, 10)) = 4
+        radius("Radius", Range(0.1, 0.5)) = 0.25
         iterations ("iterations", Range(0,15)) = 15
-        layers ("layers", Range(0,30)) = 8
+        layers ("layers", Range(0,10)) = 8
         layersblob ("layersblob", Range(0,70)) = 20
     }
     SubShader
@@ -60,8 +65,8 @@ Shader "Unlit/MiracleSnowflakes"
             float iterations;
             float layers;
             float layersblob;
-            static float radius = 0.25;
-            static float zoom = 4.;
+            float radius;
+            float _Zoom;
             static float3 light = float3(0., 0., 1.);
             static float2 seed = float2(0., 0.);
             static float iteratorc = iterations;
@@ -69,6 +74,10 @@ Shader "Unlit/MiracleSnowflakes"
             static float res;
             static float4 NC0 = float4(0., 157., 113., 270.);
             static float4 NC1 = float4(1., 158., 114., 271.);
+
+            fixed4 _FlowerColor;
+            fixed4 _BackGroundTopColor;
+            fixed4 _BackGroundBottomColor;
 
             float4 hash4(float4 n) { return frac(sin(n) * 1399763.5453123); }
 
@@ -180,7 +189,7 @@ Shader "Unlit/MiracleSnowflakes"
                     if (ds > 0.01) ds = 0.01;
 
                     float ir = 0.35 / r;
-                    r *= zoom;
+                    r *= _Zoom;
                     ray = ray * ds * 5.0;
                     for (float m = 0.0; m < iterations; m += 1.0)
                     {
@@ -191,7 +200,7 @@ Shader "Unlit/MiracleSnowflakes"
                         if (c3.x > 0.5) c3 = abs(c3 * 0.5 + float2(-c3.y, c3.x) * 0.86602540);
 
                         float g = l + c3.x * c3.x; //*1.047197551;
-                        l *= zoom;
+                        l *= _Zoom;
 
                         float h = l - r - 0.1;
                         l = pow(l, powr) + 0.1;
@@ -228,7 +237,7 @@ Shader "Unlit/MiracleSnowflakes"
                         //nray2 = normalize(ray2+n);
                     }
                     float da = pow(abs(dot(n, light)), 3.0);
-                    float3 cf = lerp(float3(0.0, 0.4, 1.0), color.xyz * 10.0, abs(dot(n, ray)));
+                    float3 cf = lerp(_FlowerColor.rgb, color.xyz * 10.0, abs(dot(n, ray)));
                     cf = lerp(cf, (float3)2.0, da);
                     color.xyz = lerp(color.xyz, cf, mxc * mxc * (0.5 + abs(dot(n, ray)) * 0.5));
                 }
@@ -255,7 +264,7 @@ Shader "Unlit/MiracleSnowflakes"
                 float time = _Time.y * 0.2;
                 float3 rotate;
                 float3x3 mr;
-                float3 ray = normalize(float3(p, 2.));
+                float3 ray = normalize(float3(p, 2));
                 float3 ray1;
                 float3 ray2;
                 float3 pos = float3(0., 0., 1.);
@@ -272,8 +281,7 @@ Shader "Unlit/MiracleSnowflakes"
                 float3 addpos = ((float3)0.);
                 pos.z = 1.;
                 mxc = 1.;
-                radius = 0.25;
-                float mzd = (zoom - 0.1) / layers;
+                float mzd = (_Zoom - 0.1) / layers;
                 for (int i = 0; i < layersblob; i++)
                 {
                     float2 p2 = p - ((float2)0.25) + ((float2)0.1 * float(i));
@@ -322,10 +330,10 @@ Shader "Unlit/MiracleSnowflakes"
                     pos.z += step;
                     iteratorc += 2.;
                     mxcl -= 1.1 / float(layersblob);
-                    zoom -= mzd;
+                    _Zoom -= mzd;
                 }
-                float3 cr = lerp(((float3)0.), float3(0., 0., 0.4), (-0.55 + p.y) * 2.);
-                fragColor.xyz += lerp((cr.xyz - fragColor.xyz) * 0.1, float3(0.2, 0.5, 1.),
+                float3 cr = lerp(((float3)0.), _BackGroundTopColor.rgb, (-0.55 + p.y) * 2.);
+                fragColor.xyz += lerp((cr.xyz - fragColor.xyz) * 0.1, _BackGroundBottomColor.rgb,
                                       clamp((-p.y + 1.) * 0.5, 0., 1.));
                 fragColor = min(((float4)1.), fragColor);
                 fragColor.a = 1.;

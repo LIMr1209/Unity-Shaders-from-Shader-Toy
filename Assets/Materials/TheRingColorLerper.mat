@@ -22,11 +22,11 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _ColorRange: 256
+    - _ColorRange: 31
     - _GammaCorrect: 1
     - _Resolution: 1
     - _ScreenEffect: 0
-    - _speed1: 3.24
+    - _speed1: 1.91
     - _speed2: 5
     - _speed3: 5
     m_Colors:

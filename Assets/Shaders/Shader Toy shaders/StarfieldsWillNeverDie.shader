@@ -6,14 +6,19 @@ Shader "Unlit/StarfieldsWillNeverDie"
         [Header(General)]
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
-        _Mouse ("Mouse", Vector) = (0.5, 0.5, 0.5, 0.5)
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
+
+        [Header(Extracted)]
+        [HDR]_MainColor("MainColor", Color) = (1, 1, 2, 0)
+        _PositionSpeed("PositionSpeed", range(0.1, 10)) = 1
+        _LaunchSpeed("LaunchSpeed", range(0.1, 10)) = 1
 
     }
     SubShader
     {
         Pass
         {
-            
+
 
             CGPROGRAM
             #pragma vertex vert
@@ -36,7 +41,7 @@ Shader "Unlit/StarfieldsWillNeverDie"
             // Built-in properties
             float _GammaCorrect;
             float _Resolution;
-            float4 _Mouse;
+            float _ScreenEffect;
 
             // GLSL Compatability macros
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
@@ -50,6 +55,8 @@ Shader "Unlit/StarfieldsWillNeverDie"
                 return o;
             }
 
+            float _PositionSpeed;
+            float _LaunchSpeed;
 
             float3 hsv(float h, float s, float v)
             {
@@ -65,10 +72,19 @@ Shader "Unlit/StarfieldsWillNeverDie"
 
             float4 frag(v2f i) : SV_Target
             {
-                float2 fragCoord = i.uv * _Resolution;
-                float2 p = (2. * fragCoord.xy - iResolution.xy) / min(iResolution.x, iResolution.y);
+                float2 p;
+                if (_ScreenEffect)
+                {
+                    float2 fragCoord = i.uv * _ScreenParams;
+                    p = (2. * fragCoord.xy - _ScreenParams.xy) / min(_ScreenParams.x, _ScreenParams.y);
+                }
+                else
+                {
+                    float2 fragCoord = i.uv * iResolution;
+                    p = (2. * fragCoord.xy - iResolution.xy) / min(iResolution.x, iResolution.y);
+                }
                 float3 v = float3(p, 1. - length(p) * 0.2);
-                float ta = _Time.y * 0.1;
+                float ta = _Time.y * 0.1 * _PositionSpeed;
                 float3x3 m = transpose(float3x3(0., 1., 0., -sin(ta), 0., cos(ta), cos(ta), 0., sin(ta)));
                 m = mul(mul(m, m), m);
                 m = mul(m, m);
@@ -79,7 +95,7 @@ Shader "Unlit/StarfieldsWillNeverDie"
                 float dist = rand(float2(slice, 1.)) * 3.;
                 float hue = rand(float2(slice, 2.));
                 float z = dist / length(v.xy) * v.z;
-                float Z = glsl_mod(z+phase+_Time.y*0.6, 1.);
+                float Z = glsl_mod(z+phase+_Time.y* _LaunchSpeed *0.6, 1.);
                 float d = sqrt(z * z + dist * dist);
                 float c = exp(-Z * 8. + 0.3) / (d * d + 1.);
                 float4 fragColor = float4(hsv(hue, 0.6 * (1. - clamp(2. * c - 1., 0., 1.)), clamp(2. * c, 0., 1.)), 1.);

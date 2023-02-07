@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    originMaterial: {fileID: 2100000, guid: bc93a74988917bb44843cdf83702d4e8, type: 2}
+    originMaterial: {fileID: 2100000, guid: 997916caf5781454fa19831c0a238b9c, type: 2}
     material: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -32,8 +32,8 @@ MonoBehaviour:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7,
       type: 3}
   m_RendererFeatures:
-  - {fileID: -9036124511500473806}
-  m_RendererFeatureMap: 326ad0d9a13c9982
+  - {fileID: 3559179585564891434}
+  m_RendererFeatureMap: 2ad96ac9f9be6431
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 0}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -73,3 +73,18 @@ MonoBehaviour:
   m_ClusteredRendering: 0
   m_TileSize: 32
   m_IntermediateTextureMode: 1
+--- !u!114 &3559179585564891434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe9503f1f68344f5b5b46df12183e17d, type: 3}
+  m_Name: ShaderToyScreenEffectRenderVolumeFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    material: {fileID: 0}
