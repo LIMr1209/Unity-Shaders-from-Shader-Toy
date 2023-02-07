@@ -3,8 +3,21 @@ Shader "Unlit/BokehParalax"
 {
     Properties
     {
+        [Header(General)]
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
+        
+        [Header(Extracted)]
+        _Speed("Speed", range(0.1,10)) = 1 
+        _BackGroundTopColor("BackGroundTopColor", Color) = (0.3, 0.1, 0.3)
+        _BackGroundBottomColor("BackGroundBottomColor", Color) = (0.1, 0.4, 0.5)
+        _CircleColorA("CircleColorA", Color) = (1.2, 0.3, 0.6)
+        _CircleColorB("CircleColorB", Color) = (2.1, 1.4, 0.7)
+        _CircleColorC("CircleColorC", Color) = (1.2, 0.9, 0.6)
+        _CircleColorD("CircleColorD", Color) = (1.2, 0.6, 0.3)
+        _CircleColorE("CircleColorE", Color) = (0.6, 0., 1.2)
+        
     }
     SubShader
     {
@@ -34,13 +47,7 @@ Shader "Unlit/BokehParalax"
 
             // GLSL Compatability macros
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
-            #define texelFetch(ch, uv, lod) tex2Dlod(ch, float4((uv).xy * ch##_TexelSize.xy + ch##_TexelSize.xy * 0.5, 0, lod))
-            #define textureLod(ch, uv, lod) tex2Dlod(ch, float4(uv, 0, lod))
             #define iResolution float3(_Resolution, _Resolution, _Resolution)
-            #define iFrame (floor(_Time.y / 60))
-            #define iChannelTime float4(_Time.y, _Time.y, _Time.y, _Time.y)
-            #define iDate float4(2020, 6, 18, 30)
-            #define iSampleRate (44100)
 
             v2f vert(appdata v)
             {
@@ -50,7 +57,15 @@ Shader "Unlit/BokehParalax"
                 return o;
             }
 
-            static const float MATH_PI = float(3.1415927);
+            float _Speed;
+            float4 _BackGroundTopColor;
+            float4 _BackGroundBottomColor;
+            float4 _ColorC;
+            float4 _CircleColorA;
+            float4 _CircleColorB;
+            float4 _CircleColorC;
+            float4 _CircleColorD;
+            float4 _CircleColorE;
 
             void Rotate(inout float2 p, float a)
             {
@@ -98,18 +113,18 @@ Shader "Unlit/BokehParalax"
                 float2 fragCoord = i.uv * _Resolution;
                 float2 uv = fragCoord.xy / iResolution.xy;
                 float2 p = (2. * fragCoord - iResolution.xy) / iResolution.x * 1000.;
-                float3 color = lerp(float3(0.3, 0.1, 0.3), float3(0.1, 0.4, 0.5), dot(uv, float2(0.2, 0.7)));
-                float time = _Time.y - 15.;
+                float3 color = lerp(_BackGroundBottomColor.rgb, _BackGroundTopColor.rgb, dot(uv, float2(0.2, 0.7)));
+                float time = _Time.y * _Speed - 15.;
                 Rotate(p, 0.2 + time * 0.03);
-                BokehLayer(color, p + float2(-50. * time + 0., 0.), 3. * float3(0.4, 0.1, 0.2));
+                BokehLayer(color, p + float2(-50. * time + 0., 0.), _CircleColorA);
                 Rotate(p, 0.3 - time * 0.05);
-                BokehLayer(color, p + float2(-70. * time + 33., -33.), 3.5 * float3(0.6, 0.4, 0.2));
+                BokehLayer(color, p + float2(-70. * time + 33., -33.), _CircleColorB);
                 Rotate(p, 0.5 + time * 0.07);
-                BokehLayer(color, p + float2(-60. * time + 55., 55.), 3. * float3(0.4, 0.3, 0.2));
+                BokehLayer(color, p + float2(-60. * time + 55., 55.), _CircleColorC);
                 Rotate(p, 0.9 - time * 0.03);
-                BokehLayer(color, p + float2(-25. * time + 77., 77.), 3. * float3(0.4, 0.2, 0.1));
+                BokehLayer(color, p + float2(-25. * time + 77., 77.), _CircleColorD);
                 Rotate(p, 0. + time * 0.05);
-                BokehLayer(color, p + float2(-15. * time + 99., 99.), 3. * float3(0.2, 0., 0.4));
+                BokehLayer(color, p + float2(-15. * time + 99., 99.), _CircleColorE);
                 float4 fragColor = float4(color, 1.);
                 if (_GammaCorrect) fragColor.rgb = pow(fragColor.rgb, 2.2);
                 return fragColor;

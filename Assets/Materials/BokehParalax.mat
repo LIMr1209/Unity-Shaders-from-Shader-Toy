@@ -24,5 +24,18 @@ Material:
     m_Floats:
     - _GammaCorrect: 1
     - _Resolution: 1
-    m_Colors: []
+    - _ScreenEffect: 0
+    - _Speed: 7
+    m_Colors:
+    - _BackGroundBottomColor: {r: 0.1, g: 0.4, b: 0.5, a: 1}
+    - _BackGroundTopColor: {r: 0.3, g: 0.1, b: 0.3, a: 1}
+    - _CircleColorA: {r: 0.18823527, g: 0.7490196, b: 0.4413144, a: 1}
+    - _CircleColorB: {r: 0.2509804, g: 0.5339526, b: 0.7490196, a: 1}
+    - _CircleColorC: {r: 0.58999413, g: 0.3764706, b: 0.7490196, a: 1}
+    - _CircleColorD: {r: 1.2, g: 0.6, b: 0.3, a: 1}
+    - _CircleColorE: {r: 0.6415094, g: 0.5799759, b: 0.008472732, a: 1}
+    - _Color: {r: 0.1, g: 0.4, b: 0.5, a: 1}
+    - _ColorA: {r: 0.10196077, g: 0.29803923, b: 0.20525157, a: 1}
+    - _ColorB: {r: 0.1, g: 0.4, b: 0.5, a: 1}
+    - _ColorC: {r: 0.6509434, g: 0, b: 0.16223983, a: 1}
   m_BuildTextureStacks: []
