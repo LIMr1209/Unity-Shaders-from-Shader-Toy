@@ -7,13 +7,22 @@ Shader "Unlit/RisingBox"
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
         _Mouse ("Mouse", Vector) = (0.5, 0.5, 0.5, 0.5)
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
+
+        [Header(Extracted)]
+        _Speed("Speed", range(0.1,10)) = 1
+        _CubeColorA("CubeColorA", Color) = (0, 0.7, 0.8)
+        _CubeColorB("CubeColorB", Color) = (0.3, 0.7, 0.2)
+        _BackgroundColor("BackgroundColor", Color) = (1, 0.95, 0.9)
+        _GlowColorA("GlowColorA", Color) = (0.9, 0.5, 0.2)
+        _GlowColorB("GlowColorB", Color) = (0.8, 0.7, 0.2)
 
     }
     SubShader
     {
         Pass
         {
-            
+
 
             CGPROGRAM
             #pragma vertex vert
@@ -36,6 +45,7 @@ Shader "Unlit/RisingBox"
             // Built-in properties
             float _GammaCorrect;
             float _Resolution;
+            float _ScreenEffect;
             float4 _Mouse;
 
             // GLSL Compatability macros
@@ -50,7 +60,14 @@ Shader "Unlit/RisingBox"
                 return o;
             }
 
-            #define time (_Time.y+100.)
+            float4 _CubeColorA;
+            float4 _CubeColorB;
+            float4 _GlowColorA;
+            float4 _GlowColorB;
+            float4 _BackgroundColor;
+            float _Speed;
+
+            #define time (_Time.y * _Speed +100.)
 
             float3x3 lookat(float3 d, float3 up)
             {
@@ -113,10 +130,10 @@ Shader "Unlit/RisingBox"
             float3 doColor(float3 p)
             {
                 if (p.y > 10.)
-                    return float3(0, 0.7, 0.8);
+                    return _CubeColorA.rgb;
 
                 if (p.y > 0.)
-                    return float3(0.3, 0.7, 0.2);
+                    return _CubeColorB.rgb;
 
                 return ((float3)0);
             }
@@ -130,8 +147,18 @@ Shader "Unlit/RisingBox"
 
             float4 frag(v2f i) : SV_Target
             {
-                float2 fragCoord = i.uv * _Resolution;
-                float2 p = (fragCoord * 2. - iResolution.xy) / iResolution.y;
+                float2 p;
+                if (_ScreenEffect)
+                {
+                    float2 fragCoord = i.uv * _ScreenParams;
+                    p = (fragCoord * 2. - _ScreenParams.xy) / _ScreenParams.y;
+                }
+                else
+                {
+                    float2 fragCoord = i.uv * iResolution;
+                    p = (fragCoord * 2. - iResolution.xy) / iResolution.y;
+                }
+
                 float3 ro = float3(0., 25., 20.);
                 ro.xz = mul(rotate(_Time.y * 0.1), ro.xz);
                 float3 rd = mul(lookat(-ro, float3(0, 1, 0)), normalize(float3(p, 2)));
@@ -166,14 +193,14 @@ Shader "Unlit/RisingBox"
                 float3 c = rayCastPlane(ro, rd, ((float3)0), float3(0, 1, 0), float3(0, 0, 1));
                 if (c.z < t)
                 {
-                    col = lerp(col, float3(1, 0.95, 0.9), smoothstep(30., 0., length(c.xy)));
-                    col = lerp(col, float3(0.9, 0.5, 0.2), smoothstep(1., 0., map(ro + rd * c.z)));
+                    col = lerp(col, _BackgroundColor.rgb, smoothstep(30., 0., length(c.xy)));
+                    col = lerp(col, _GlowColorA.rgb, smoothstep(1., 0., map(ro + rd * c.z)));
                 }
 
                 c = rayCastPlane(ro, rd, float3(0, 10, 0), float3(0, 1, 0), float3(0, 0, 1));
                 if (c.z < t)
                 {
-                    col = lerp(col, float3(0.8, 0.7, 0.2), smoothstep(1., 0., map(ro + rd * c.z)));
+                    col = lerp(col, _GlowColorB.rgb, smoothstep(1., 0., map(ro + rd * c.z)));
                 }
 
                 float4 fragColor = float4(col, 1.);;

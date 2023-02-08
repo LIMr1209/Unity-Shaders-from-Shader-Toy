@@ -3,8 +3,13 @@ Shader "Unlit/IceAndFire"
 {
     Properties
     {
+        [Header(General)]
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
+        
+        [Header(Extracted)]
+        _Speed("Speed", range(0.1,10)) = 1
     }
     SubShader
     {
@@ -31,16 +36,11 @@ Shader "Unlit/IceAndFire"
             // Built-in properties
             float _GammaCorrect;
             float _Resolution;
+            float _ScreenEffect;
 
             // GLSL Compatability macros
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
-            #define texelFetch(ch, uv, lod) tex2Dlod(ch, float4((uv).xy * ch##_TexelSize.xy + ch##_TexelSize.xy * 0.5, 0, lod))
-            #define textureLod(ch, uv, lod) tex2Dlod(ch, float4(uv, 0, lod))
             #define iResolution float3(_Resolution, _Resolution, _Resolution)
-            #define iFrame (floor(_Time.y / 60))
-            #define iChannelTime float4(_Time.y, _Time.y, _Time.y, _Time.y)
-            #define iDate float4(2020, 6, 18, 30)
-            #define iSampleRate (44100)
 
             v2f vert(appdata v)
             {
@@ -50,6 +50,7 @@ Shader "Unlit/IceAndFire"
                 return o;
             }
 
+            float _Speed;
             static const float s3 = 1.7320508;
             static const float i3 = 0.57735026;
             static const float2x2 tri2cart = transpose(float2x2(1., 0., -0.5, 0.5 * s3));
@@ -123,7 +124,7 @@ Shader "Unlit/IceAndFire"
             float2 triPoint(float2 p)
             {
                 float t0 = hash12(p);
-                return mul(tri2cart, p) + 0.45 * randCircleSpline(p, 0.15 * _Time.y + t0);
+                return mul(tri2cart, p) + 0.45 * randCircleSpline(p, 0.15 * _Time.y * _Speed + t0);
             }
 
             void tri_color(in float2 p, in float4 t0, in float4 t1, in float4 t2, in float scl, inout float4 cw)
@@ -142,9 +143,9 @@ Shader "Unlit/IceAndFire"
                     float2 tsum = t0.zw + t1.zw + t2.zw;
                     float3 h_tri = float3(hash12(tsum + t0.zw), hash12(tsum + t1.zw), hash12(tsum + t2.zw));
                     float2 pctr = (t0.xy + t1.xy + t2.xy) / 3.;
-                    float theta = 1. + 0.01 * _Time.y;
+                    float theta = 1. + 0.01 * _Time.y * _Speed;
                     float2 dir = float2(cos(theta), sin(theta));
-                    float grad_input = dot(pctr, dir) - sin(0.05 * _Time.y);
+                    float grad_input = dot(pctr, dir) - sin(0.05 * _Time.y * _Speed);
                     float h0 = sin(0.7 * grad_input) * 0.5 + 0.5;
                     h_tri = lerp(((float3)h0), h_tri, 0.4);
                     float h = dot(h_tri, b);
@@ -156,9 +157,20 @@ Shader "Unlit/IceAndFire"
 
             float4 frag(v2f i) : SV_Target
             {
-                float2 fragCoord = i.uv * _Resolution;
-                float scl = 4.1 / iResolution.y;
-                float2 p = (fragCoord - 0.5 - 0.5 * iResolution.xy) * scl;
+                float scl;
+                float2 p;
+                if(_ScreenEffect)
+                {
+                    float2 fragCoord = i.uv * _ScreenParams;
+                    scl = 4.1 / _ScreenParams.y;
+                    p = (fragCoord - 0.5 - 0.5 * _ScreenParams.xy) * scl;
+                }else
+                {
+                    float2 fragCoord = i.uv * iResolution;
+                    scl = 4.1 / iResolution.y;
+                    p = (fragCoord - 0.5 - 0.5 * iResolution.xy) * scl;
+                }
+               
                 float2 tfloor = floor(mul(cart2tri, p) + 0.5);
                 float2 pts[9];
                 for (int i = 0; i < 3; ++i)

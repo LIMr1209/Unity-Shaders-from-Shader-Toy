@@ -9,8 +9,11 @@ Shader "Unlit/CubicDispersal"
         _Mouse ("Mouse", Vector) = (0.5, 0.5, 0.5, 0.5)
         
         [Header(Extracted)]
-        MDIST ("MDIST", Float) = 150
-        STEPS ("STEPS", Float) = 164
+        MDIST ("MDIST", Range(1, 60)) = 60
+        STEPS ("STEPS", Range(1, 60)) = 60
+        _Speed("Speed", Range(0.1,10)) = 1
+        _BackgroundColorA("BackGroundColorA", Color) = (0.373, 0.835, 0.988)
+        _BackgroundColorB("BackgroundColorB", Color) = (0.424, 0.059, 0.925)
 
     }
     SubShader
@@ -61,6 +64,11 @@ Shader "Unlit/CubicDispersal"
             #define rot(a) transpose(float2x2(cos(a), sin(a), -sin(a), cos(a)))
             #define vmm(v, minOrMax) minOrMax(v.x, minOrMax(v.y, v.z))
             #define AO(a, n, p) smoothstep(-a, a, map(p+n*a).x)
+
+            float4 _BackgroundColorA;
+            float4 _BackgroundColorB;
+            float _Speed;
+            
             float ebox(float3 p, float3 b)
             {
                 float3 q = abs(p)-b;
@@ -156,7 +164,7 @@ Shader "Unlit/CubicDispersal"
                 float id = 0.;
                 if (a.x<0.1||!traverse)
                 {
-                    float t = _Time.y;
+                    float t = _Time.y * _Speed;
                     sdResult sdr = subdiv(p.xz, seed);
                     float3 centerOff = float3(sdr.center.x, 0, sdr.center.y);
                     float2 dim = sdr.dim;
@@ -252,7 +260,7 @@ Shader "Unlit/CubicDispersal"
                 }
                 else 
                 {
-                    col = lerp(float3(0.373, 0.835, 0.988), float3(0.424, 0.059, 0.925), length(uv));
+                    col = lerp(_BackgroundColorA.rgb, _BackgroundColorB.rgb, length(uv));
                 }
                 col *= 1.-0.5*pow(length(uv*float2(0.8, 1.)), 2.7);
                 float3 col2 = smoothstep(float3(0., 0., 0.), float3(1.1, 1.1, 1.3), col);

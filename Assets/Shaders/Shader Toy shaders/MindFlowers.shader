@@ -3,8 +3,13 @@ Shader "Unlit/MindFlowers"
 {
     Properties
     {
-        _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
+        [Header(General)]
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
+        _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
+
+        [Header(Extracted)]
+        _Speed("Speed", Range(0.1,10)) = 1
     }
     SubShader
     {
@@ -22,40 +27,59 @@ Shader "Unlit/MindFlowers"
 
             #include "UnityCG.cginc"
 
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float2 uv : TEXCOORD0;
+                float4 vertex : SV_POSITION;
+            };
+
             #define PI          3.141592654
             #define PI_2        (0.5*PI)
             #define TAU         (2.0*PI)
             #define BPM         (157.0/4.0)
             #define PCOS(a)     0.5*(cos(a)+1.0)
 
-            static const float planeDist = 1.-0.8;
+            static const float planeDist = 1. - 0.8;
             static const int furthest = 16;
-            static const int fadeFrom = max(furthest-4, 0);
-            static const float fadeDist = planeDist*float(furthest-fadeFrom);
+            static const int fadeFrom = max(furthest - 4, 0);
+            static const float fadeDist = planeDist * float(furthest - fadeFrom);
             static const float overSample = 4.;
-            static const float ringDistance = 0.075*overSample/4.;
-            static const float noOfRings = 20.*4./overSample;
+            static const float ringDistance = 0.075 * overSample / 4.;
+            static const float noOfRings = 20. * 4. / overSample;
             static const float glowFactor = 0.05;
 
 
+            // Built-in properties
             float _GammaCorrect;
             float _Resolution;
+            float _ScreenEffect;
 
             // GLSL Compatability macros
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
-            #define texelFetch(ch, uv, lod) tex2Dlod(ch, float4((uv).xy * ch##_TexelSize.xy + ch##_TexelSize.xy * 0.5, 0, lod))
-            #define textureLod(ch, uv, lod) tex2Dlod(ch, float4(uv, 0, lod))
             #define iResolution float3(_Resolution, _Resolution, _Resolution)
-            #define iFrame (floor(_Time.y / 60))
-            #define iChannelTime float4(_Time.y, _Time.y, _Time.y, _Time.y)
-            #define iDate float4(2020, 6, 18, 30)
-            #define iSampleRate (44100)
+
+            v2f vert(appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.uv;
+                return o;
+            }
+
+            float _Speed;
 
             float4 alphaBlend(float4 back, float4 front)
             {
                 float w = front.w + back.w * (1.0 - front.w);
                 float3 xyz = (front.xyz * front.w + back.xyz * back.w * (1.0 - front.w)) / w;
-                return w > 0.0 ? float4(xyz, w) : float4(0,0,0,0);
+                return w > 0.0 ? float4(xyz, w) : float4(0, 0, 0, 0);
             }
 
             // License: Unknown, author: Unknown, found: don't remember
@@ -82,7 +106,8 @@ Shader "Unlit/MindFlowers"
             float3 offset(float z)
             {
                 float a = z;
-                float2 p = -0.15 * (float2(cos(a), sin(a * sqrt(2.0))) + float2(cos(a * sqrt(0.75)), sin(a * sqrt(0.5))));
+                float2 p = -0.15 * (float2(cos(a), sin(a * sqrt(2.0))) +
+                    float2(cos(a * sqrt(0.75)), sin(a * sqrt(0.5))));
                 return float3(p, z);
             }
 
@@ -100,7 +125,7 @@ Shader "Unlit/MindFlowers"
 
             float3 skyColor(float3 ro, float3 rd)
             {
-                return float3(0,0,0);
+                return float3(0, 0, 0);
             }
 
             // License: MIT OR CC-BY-NC-4.0, author: mercury, found: https://mercury.sexy/hg_sdf/
@@ -140,7 +165,7 @@ Shader "Unlit/MindFlowers"
                         * ringDistance
                         / d
                     )
-                    * (cos(a + b + float3(0, 1, 2)) + float3(1,1,1));
+                    * (cos(a + b + float3(0, 1, 2)) + float3(1, 1, 1));
             }
 
             float3 glowRings(float2 p, float hh)
@@ -148,7 +173,7 @@ Shader "Unlit/MindFlowers"
                 float2 pp = toPolar(p);
 
                 //  pp.y += TAU*hh;
-                float3 col = float3(0,0,0);
+                float3 col = float3(0, 0, 0);
                 float h = 1.0;
                 const float nr = 1.0 / overSample;
 
@@ -174,8 +199,8 @@ Shader "Unlit/MindFlowers"
                 float2 p = (pp - off * float3(1.0, 1.0, 0.0)).xy;
                 float l = length(p);
                 float fade = smoothstep(0.1, 0.15, l);
-                if (fade < 0.1) return float4(0,0,0,0);
-                float4 col = float4(0,0,0,0);
+                if (fade < 0.1) return float4(0, 0, 0, 0);
+                float4 col = float4(0, 0, 0, 0);
 
                 col.xyz = glowRings(p * lerp(0.5, 4.0, h), h);
                 float i = max(max(col.x, col.y), col.z);
@@ -201,7 +226,7 @@ Shader "Unlit/MindFlowers"
                 float3 skyCol = skyColor(ro, rd);
 
 
-                float4 acol = float4(0,0,0,0);
+                float4 acol = float4(0, 0, 0, 0);
                 const float cutOff = 0.95;
                 bool cutOut = false;
 
@@ -250,7 +275,7 @@ Shader "Unlit/MindFlowers"
 
             float3 effect(float2 p)
             {
-                float tm = planeDist * _Time.y * BPM / 60.0;
+                float tm = planeDist * _Time.y * _Speed * BPM / 60.0;
                 float3 ro = offset(tm);
                 float3 dro = doffset(tm);
                 float3 ddro = ddoffset(tm);
@@ -267,27 +292,6 @@ Shader "Unlit/MindFlowers"
                 col = clamp(col, 0.0, 1.0);
                 col = sqrt(col);
                 return col;
-            }
-
-
-            struct appdata
-            {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-            };
-
-            struct v2f
-            {
-                float2 uv : TEXCOORD0;
-                float4 vertex : SV_POSITION;
-            };
-
-            v2f vert(appdata v)
-            {
-                v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv;
-                return o;
             }
 
             #define bpm 150.
@@ -309,10 +313,21 @@ Shader "Unlit/MindFlowers"
 
             fixed4 frag(v2f i) : SV_Target
             {
-                float2 fragCoord = i.uv * _Resolution;
-                float2 q = fragCoord / iResolution.xy;
-                float2 p = -1. + 2. * q;
-                p.x *= iResolution.x / iResolution.y;
+                float2 p;
+                if (_ScreenEffect)
+                {
+                    float2 fragCoord = i.uv * _ScreenParams;
+                    float2 q = fragCoord / _ScreenParams.xy;
+                    p = -1. + 2. * q;
+                    p.x *= _ScreenParams.x / _ScreenParams.y;
+                }
+                else
+                {
+                    float2 fragCoord = i.uv * iResolution;
+                    float2 q = fragCoord / iResolution.xy;
+                    p = -1. + 2. * q;
+                    p.x *= iResolution.x / iResolution.y;
+                }
                 float3 col = effect(p);
                 float4 fragColor = float4(col, 1.);
                 if (_GammaCorrect) fragColor.rgb = pow(fragColor.rgb, 2.2);

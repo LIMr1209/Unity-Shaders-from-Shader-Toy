@@ -44,6 +44,7 @@ Shader "Unlit/BokehParalax"
             // Built-in properties
             float _GammaCorrect;
             float _Resolution;
+            float _ScreenEffect;
 
             // GLSL Compatability macros
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
@@ -110,9 +111,19 @@ Shader "Unlit/BokehParalax"
 
             float4 frag(v2f i) : SV_Target
             {
-                float2 fragCoord = i.uv * _Resolution;
-                float2 uv = fragCoord.xy / iResolution.xy;
-                float2 p = (2. * fragCoord - iResolution.xy) / iResolution.x * 1000.;
+                float2 uv;
+                float2 p;
+                if(_ScreenEffect)
+                {
+                    float2 fragCoord = i.uv * _ScreenParams;
+                    uv = fragCoord.xy / _ScreenParams.xy;
+                    p = (2. * fragCoord - _ScreenParams.xy) / _ScreenParams.x * 1000.;
+                }else
+                {
+                    float2 fragCoord = i.uv * iResolution;
+                    uv = fragCoord.xy / iResolution.xy;
+                    p = (2. * fragCoord - iResolution.xy) / iResolution.x * 1000.;
+                }
                 float3 color = lerp(_BackGroundBottomColor.rgb, _BackGroundTopColor.rgb, dot(uv, float2(0.2, 0.7)));
                 float time = _Time.y * _Speed - 15.;
                 Rotate(p, 0.2 + time * 0.03);

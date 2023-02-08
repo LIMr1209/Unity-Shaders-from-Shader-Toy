@@ -9,7 +9,6 @@ Shader "Unlit/PsychedelicSnowflake"
         [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
 
         [Header(Extracted)]
-        i3 ("i3", Float) = 0.33333334
         bgprd ("bgprd", Float) = 4
     }
     SubShader
@@ -42,13 +41,7 @@ Shader "Unlit/PsychedelicSnowflake"
 
             // GLSL Compatability macros
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
-            #define texelFetch(ch, uv, lod) tex2Dlod(ch, float4((uv).xy * ch##_TexelSize.xy + ch##_TexelSize.xy * 0.5, 0, lod))
-            #define textureLod(ch, uv, lod) tex2Dlod(ch, float4(uv, 0, lod))
             #define iResolution float3(_Resolution, _Resolution, _Resolution)
-            #define iFrame (floor(_Time.y / 60))
-            #define iChannelTime float4(_Time.y, _Time.y, _Time.y, _Time.y)
-            #define iDate float4(2020, 6, 18, 30)
-            #define iSampleRate (44100)
 
             v2f vert(appdata v)
             {
@@ -68,7 +61,7 @@ Shader "Unlit/PsychedelicSnowflake"
             static const float IOR = 1.45;
             static const float invIOR = 1. / IOR;
             static const float den = 0.2;
-            const float i3 = 1. / 3.;
+            static const float i3 = 1. / 3.;
             static const float pii3 = pi * i3;
             static const float tFac = 1. * tau / 6.;
             static const float sFac = 0.0003;
