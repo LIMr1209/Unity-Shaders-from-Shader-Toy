@@ -25,7 +25,7 @@ Material:
     - _GammaCorrect: 1
     - _Resolution: 1
     - _ScreenEffect: 0
-    - _Speed: 7
+    - _Speed: 1.93
     m_Colors:
     - _BackGroundBottomColor: {r: 0.1, g: 0.4, b: 0.5, a: 1}
     - _BackGroundTopColor: {r: 0.3, g: 0.1, b: 0.3, a: 1}

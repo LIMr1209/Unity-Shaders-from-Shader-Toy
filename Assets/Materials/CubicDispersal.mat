@@ -22,10 +22,17 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - MDIST: 150
-    - STEPS: 164
+    - MDIST: 60.1
+    - STEPS: 60
     - _GammaCorrect: 1
     - _Resolution: 1
+    - _Speed: 2.45
     m_Colors:
+    - _BackGroundColor: {r: 0.424, g: 0.059, b: 0.925, a: 1}
+    - _BackgroundColor: {r: 1, g: 0.6673518, b: 0.135849, a: 1}
+    - _BackgroundColorA: {r: 0.9882353, g: 0.37254903, b: 0.71791667, a: 1}
+    - _BackgroundColorB: {r: 0.6920913, g: 0.050124552, b: 0.8301887, a: 1}
+    - _ColorA: {r: 0, g: 0.33, b: 0.66, a: 1}
+    - _ColorB: {r: 0.984, g: 0.996, b: 0.804, a: 1}
     - _Mouse: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
   m_BuildTextureStacks: []

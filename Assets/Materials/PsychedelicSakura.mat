@@ -24,5 +24,11 @@ Material:
     m_Floats:
     - _GammaCorrect: 1
     - _Resolution: 1
-    m_Colors: []
+    - _ScreenEffect: 0
+    - _Speed: 4.99
+    m_Colors:
+    - _CircleColorA: {r: 0.044214953, g: 0.8495067, b: 0.8679245, a: 1}
+    - _CircleColorB: {r: 0.123353474, g: 0.8490566, b: 0.17241967, a: 1}
+    - _CircleColorC: {r: 0.14007053, g: 0, b: 0.9716981, a: 1}
+    - _CircleColorD: {r: 0.9716981, g: 0, b: 0.110164136, a: 1}
   m_BuildTextureStacks: []

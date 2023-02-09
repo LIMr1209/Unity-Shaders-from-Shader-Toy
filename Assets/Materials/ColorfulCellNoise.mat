@@ -24,5 +24,7 @@ Material:
     m_Floats:
     - _GammaCorrect: 1
     - _Resolution: 1
+    - _ScreenEffect: 0
+    - _Speed: 1
     m_Colors: []
   m_BuildTextureStacks: []

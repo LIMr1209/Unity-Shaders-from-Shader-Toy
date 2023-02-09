@@ -24,7 +24,7 @@ Material:
     m_Floats:
     - IOR: 1.45
     - _GammaCorrect: 1
-    - _Resolution: 1
+    - _Resolution: 1024
     - _ScreenEffect: 0
     - bgprd: 4
     - den: 0.2
