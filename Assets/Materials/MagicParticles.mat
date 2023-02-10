@@ -39,6 +39,6 @@ Material:
     m_Ints: []
     m_Floats:
     - _GammaCorrect: 1
-    - _Resolution: 227
+    - _Resolution: 1024
     m_Colors: []
   m_BuildTextureStacks: []

@@ -36,5 +36,5 @@ Material:
     - _Speed: 0.1
     - _Symmetry: 0
     m_Colors:
-    - _Area: {r: 0, g: 0, b: 4.5978966, a: 4.5978966}
+    - _Area: {r: 0, g: 0, b: 4.462673, a: 4.462673}
   m_BuildTextureStacks: []

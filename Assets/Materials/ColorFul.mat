@@ -21,6 +21,14 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Ints: []
-    m_Floats: []
+    m_Floats:
+    - _GammaCorrect: 1
+    - _Resolution: 1
+    - _RotateSpeed: 1
+    - _ScreenEffect: 0
+    - _ShakeSpeed: 1
+    - _Size: 0.6
+    - _Speed: 10
+    - _Tessellation: 0.1
     m_Colors: []
   m_BuildTextureStacks: []

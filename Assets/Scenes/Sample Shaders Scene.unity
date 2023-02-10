@@ -1018,7 +1018,7 @@ GameObject:
   - component: {fileID: 85418710}
   - component: {fileID: 85418709}
   m_Layer: 0
-  m_Name: HyperspaceTunne (1)
+  m_Name: MobiusTrans
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1073,7 +1073,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: be66c9d7625f7c54c9cef4cda8c29dd1, type: 2}
+  - {fileID: 2100000, guid: ca1304c9416e57f429dcf20166a142a4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1523,7 +1523,6 @@ GameObject:
   - component: {fileID: 149452605}
   - component: {fileID: 149452604}
   - component: {fileID: 149452603}
-  - component: {fileID: 149452607}
   m_Layer: 0
   m_Name: PhantomStarForCine
   m_TagString: Untagged
@@ -1610,20 +1609,6 @@ Transform:
   m_Father: {fileID: 1779471258}
   m_RootOrder: 100
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &149452607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 149452602}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82e01c6327a64fc18f2f456a7789ae00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Resolution: 1024
-  material: {fileID: 2100000, guid: 2ce3edf318a1aa34083446eef4143c0f, type: 2}
 --- !u!1 &153503394
 GameObject:
   m_ObjectHideFlags: 0
@@ -4006,7 +3991,7 @@ GameObject:
   - component: {fileID: 553408046}
   - component: {fileID: 553408045}
   m_Layer: 0
-  m_Name: StarFieldPractice (1)
+  m_Name: RaymarchingBasic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4061,7 +4046,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 20dd20e486d1b644bbeedfffa704e5b0, type: 2}
+  - {fileID: 2100000, guid: feaa92aa081c64740b974ac4f26994af, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9608,9 +9593,8 @@ GameObject:
   - component: {fileID: 1415689735}
   - component: {fileID: 1415689734}
   - component: {fileID: 1415689733}
-  - component: {fileID: 1415689732}
   m_Layer: 0
-  m_Name: Stars (1)
+  m_Name: Shaderlamp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9631,20 +9615,6 @@ Transform:
   m_Father: {fileID: 1779471258}
   m_RootOrder: 130
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1415689732
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1415689730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a90e3f81ab2241d5a2310c0072189fbe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Resolution: 1024
-  material: {fileID: 2100000, guid: 1a6a24787156a9b4ba2c6b384ec27fa2, type: 2}
 --- !u!64 &1415689733
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -9679,7 +9649,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: a4d5641f90c42f84fbea7f5505ce13ed, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10603,7 +10573,6 @@ GameObject:
   - component: {fileID: 1545847182}
   - component: {fileID: 1545847181}
   - component: {fileID: 1545847180}
-  - component: {fileID: 1545847184}
   m_Layer: 0
   m_Name: PearlyRopes
   m_TagString: Untagged
@@ -10690,20 +10659,6 @@ Transform:
   m_Father: {fileID: 1779471258}
   m_RootOrder: 96
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1545847184
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1545847179}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a07305e16da4114b61dd64d68b2a1a8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Resolution: 1024
-  material: {fileID: 2100000, guid: bbb3631c0f42b3e4ca347ee1c047a9a2, type: 2}
 --- !u!1 &1565025489
 GameObject:
   m_ObjectHideFlags: 0

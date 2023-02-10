@@ -22,8 +22,13 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
+    - _BlackholeIntensity: 1
     - _GammaCorrect: 1
+    - _Iterations: 12
     - _Resolution: 1024
+    - _ScreenEffect: 0
+    - _Speed: 0.1
+    - _Zoom: 1
     - blackholeIntensity: 1
     - blackholeRadius: 1.2
     - brightness: 0.0015

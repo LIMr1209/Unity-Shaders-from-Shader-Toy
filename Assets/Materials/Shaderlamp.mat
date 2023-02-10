@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Snow
-  m_Shader: {fileID: 4800000, guid: 7d7856d16a8f4f1db947592d85874650, type: 3}
+  m_Name: Shaderlamp
+  m_Shader: {fileID: 4800000, guid: 36aae3f1fe20468885e2a47dd78f3bee, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -22,13 +22,8 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _DownSpeed: 1
-    - _GammaCorrect: 1
-    - _LayerNum: 6
-    - _Resolution: 1024
+    - _GammaCorrect: 0
+    - _Resolution: 1
     - _ScreenEffect: 0
-    - _SnowNum: 12
-    m_Colors:
-    - _BackGroundColor: {r: 0.4, g: 0.8, b: 1, a: 0}
-    - _MainColor: {r: 1, g: 1, b: 1, a: 1}
+    m_Colors: []
   m_BuildTextureStacks: []
