@@ -135,13 +135,13 @@ Shader "Unlit/FestivePentagram "
 
             float3 transform(in float3 p)
             {
-                if (_Mouse.x>0.)
-                {
-                    float theta = (2.*_Mouse.y-iResolution.y)/iResolution.y*PI;
-                    float phi = (2.*_Mouse.x-iResolution.x)/iResolution.x*PI;
-                    p.yz = rotate(p.yz, theta);
-                    p.zx = rotate(p.zx, -phi);
-                }
+                // if (_Mouse.x>0.)
+                // {
+                //     float theta = (2.*_Mouse.y-iResolution.y)/iResolution.y*PI;
+                //     float phi = (2.*_Mouse.x-iResolution.x)/iResolution.x*PI;
+                //     p.yz = rotate(p.yz, theta);
+                //     p.zx = rotate(p.zx, -phi);
+                // }
                 
                 return p;
             }

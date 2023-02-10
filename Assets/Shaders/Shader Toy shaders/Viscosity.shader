@@ -3,8 +3,15 @@ Shader "Unlit/Viscosity"
 {
     Properties
     {
+        [Header(General)]
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
+
+        [Header(Extracted)]
+        _Speed("Speed", range(0.1,10)) = 1
+        _Scale("Scale", range(0.1,10)) = 1
+        _Blur("Blur", range(0.1,10)) = 1
     }
     SubShader
     {
@@ -31,16 +38,11 @@ Shader "Unlit/Viscosity"
             // Built-in properties
             float _GammaCorrect;
             float _Resolution;
+            float _ScreenEffect;
 
             // GLSL Compatability macros
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
-            #define texelFetch(ch, uv, lod) tex2Dlod(ch, float4((uv).xy * ch##_TexelSize.xy + ch##_TexelSize.xy * 0.5, 0, lod))
-            #define textureLod(ch, uv, lod) tex2Dlod(ch, float4(uv, 0, lod))
             #define iResolution float3(_Resolution, _Resolution, _Resolution)
-            #define iFrame (floor(_Time.y / 60))
-            #define iChannelTime float4(_Time.y, _Time.y, _Time.y, _Time.y)
-            #define iDate float4(2020, 6, 18, 30)
-            #define iSampleRate (44100)
 
             v2f vert(appdata v)
             {
@@ -50,6 +52,9 @@ Shader "Unlit/Viscosity"
                 return o;
             }
 
+            float _Speed;
+            float _Scale;
+            float _Blur;
             #define PI 3.1415927
 
             float2 rot(float2 p, float a)
@@ -61,10 +66,19 @@ Shader "Unlit/Viscosity"
 
             float4 frag(v2f i) : SV_Target
             {
-                float2 uv = i.uv * _Resolution;
-                uv /= iResolution.xx;
+                float2 uv;
+                if (_ScreenEffect)
+                {
+                    uv = i.uv * _ScreenParams;
+                    uv /= _ScreenParams.xx;
+                }
+                else
+                {
+                    uv = i.uv * iResolution;
+                    uv /= iResolution.xx;
+                }
                 uv = float2(0.125, 0.75) + (uv - float2(0.125, 0.75)) * 0.03;
-                float T = _Time.y * 0.25;
+                float T = _Time.y * 0.25 * _Speed;
                 float3 c = clamp(1. - 0.7 * float3(length(uv - float2(0.1, 0)), length(uv - float2(0.9, 0)),
                                                    length(uv - float2(0.5, 1))), 0., 1.) * 2. - 1.;
                 float3 c0 = ((float3)0);
@@ -73,8 +87,8 @@ Shader "Unlit/Viscosity"
                 for (float i = 0.; i < N; i++)
                 {
                     float wt = (i * i / N / N - 0.2) * 0.3;
-                    float wp = 0.5 + (i + 1.) * (i + 1.5) * 0.001;
-                    float wb = 0.05 + i / N * 0.1;
+                    float wp = 0.5 * _Scale + (i + 1.) * (i + 1.5) * 0.001;
+                    float wb = 0.05 * _Blur + i / N * 0.1;
                     c.zx = rot(c.zx, 1.6 + T * 0.65 * wt + (uv.x + 0.7) * 23. * wp);
                     c.xy = rot(c.xy, c.z * c.x * wb + 1.7 + T * wt + (uv.y + 1.1) * 15. * wp);
                     c.yz = rot(

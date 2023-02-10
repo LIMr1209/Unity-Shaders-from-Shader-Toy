@@ -7,28 +7,20 @@ Shader "Unlit/Lensing"
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
         _Mouse ("Mouse", Vector) = (0.5, 0.5, 0.5, 0.5)
+        [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
 
         [Header(Extracted)]
-        iterations ("iterations", Float) = 12
-        formuparam ("formuparam", Float) = 0.57
-        volsteps ("volsteps", Float) = 10
-        stepsize ("stepsize", Float) = 0.2
-        zoom ("zoom", Float) = 1.2
-        tile ("tile", Float) = 1
-        speed ("speed", Float) = 0.01
-        brightness ("brightness", Float) = 0.0015
-        darkmatter ("darkmatter", Float) = 1
-        distfading ("distfading", Float) = 0.73
-        saturation ("saturation", Float) = 1
-        blackholeRadius ("blackholeRadius", Float) = 1.2
-        blackholeIntensity ("blackholeIntensity", Float) = 1
+        _Iterations ("Iterations", range(5,30)) = 12
+        _Zoom ("Zoom", range(1.0, 10)) = 1.2
+        _Speed ("Speed", range(0.1, 10)) = 0.1
+        _BlackholeIntensity ("BlackholeIntensity", Float) = 1
 
     }
     SubShader
     {
         Pass
         {
-            
+
 
             CGPROGRAM
             #pragma vertex vert
@@ -52,16 +44,11 @@ Shader "Unlit/Lensing"
             float _GammaCorrect;
             float _Resolution;
             float4 _Mouse;
+            float _ScreenEffect;
 
             // GLSL Compatability macros
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
-            #define texelFetch(ch, uv, lod) tex2Dlod(ch, float4((uv).xy * ch##_TexelSize.xy + ch##_TexelSize.xy * 0.5, 0, lod))
-            #define textureLod(ch, uv, lod) tex2Dlod(ch, float4(uv, 0, lod))
             #define iResolution float3(_Resolution, _Resolution, _Resolution)
-            #define iFrame (floor(_Time.y / 60))
-            #define iChannelTime float4(_Time.y, _Time.y, _Time.y, _Time.y)
-            #define iDate float4(2020, 6, 18, 30)
-            #define iSampleRate (44100)
 
             v2f vert(appdata v)
             {
@@ -72,21 +59,20 @@ Shader "Unlit/Lensing"
             }
 
 
-            float iterations;
-            float formuparam;
-            float volsteps;
-            float stepsize;
-            float zoom;
-            float tile;
-            float speed;
-            float brightness;
-            float darkmatter;
-            float distfading;
-            float saturation;
-            #define mo (2.*_Mouse.xy-iResolution.xy)/iResolution.y
+            static const float formuparam = 0.57;
+            static const float volsteps = 10.0;
+            static const float stepsize = 0.2;
+            static const float tile = 1.0;
+            static const float brightness = 0.0015;
+            static const float darkmatter = 1;
+            static const float distfading = 0.73;
+            static const float saturation = 1;
             #define blackholeCenter float3(time*2., time, -2.)
-            float blackholeRadius;
-            float blackholeIntensity;
+            static const float blackholeRadius = 0.01;
+            float _Iterations;
+            float _Zoom;
+            float _Speed;
+            float _BlackholeIntensity;
 
             float iSphere(float3 ray, float3 dir, float3 center, float radius)
             {
@@ -114,12 +100,40 @@ Shader "Unlit/Lensing"
 
             float4 frag(v2f i) : SV_Target
             {
-                float4 fragColor = 0;
-                float2 fragCoord = i.uv * _Resolution;
-                float2 uv = fragCoord.xy / iResolution.xy - 0.5;
-                uv.y *= iResolution.y / iResolution.x;
-                float3 dir = float3(uv * zoom, 1.);
-                float time = _Time.y * speed + 0.25;
+                float4 fragColor;
+                float2 uv;
+                float2 mo;
+                if (_ScreenEffect)
+                {
+                    float2 fragCoord = i.uv * _ScreenParams;
+                    uv = fragCoord.xy / _ScreenParams.xy - 0.5;
+                    uv.y *= _ScreenParams.y / _ScreenParams.x;
+                    if (_Mouse.z == 1.0)
+                    {
+                        mo = (2. * _Mouse.xy - _ScreenParams.xy) / _ScreenParams.y;
+                    }
+                    else
+                    {
+                        mo = (2. - _ScreenParams.xy) / _ScreenParams.y;
+                    }
+                }
+                else
+                {
+                    float2 fragCoord = i.uv * iResolution;
+                    uv = fragCoord.xy / iResolution.xy - 0.5;
+                    uv.y *= iResolution.y / iResolution.x;
+                    if (_Mouse.z == 1.0)
+                    {
+                        mo = (2. * _Mouse.xy - iResolution.xy) / iResolution.y;
+                    }
+                    else
+                    {
+                        mo = (2. - iResolution.xy) / iResolution.y;
+                    }
+                }
+
+                float3 dir = float3(uv * _Zoom, 1.);
+                float time = _Time.y * _Speed / 10 + 0.25;
                 float3 from = float3(0., 0., -15.);
                 from = r(from, mo / 10.);
                 dir = r(dir, mo / 10.);
@@ -131,7 +145,7 @@ Shader "Unlit/Lensing"
                 if (intensity > blackholeRadius * blackholeRadius)
                 {
                     intensity = 1. / intensity;
-                    dir = lerp(dir, pos * sqrt(intensity), blackholeIntensity * intensity);
+                    dir = lerp(dir, pos * sqrt(intensity), _BlackholeIntensity * intensity);
                     float s = 0.1, fade = 1.;
                     float3 v = ((float3)0.);
                     for (int r = 0; r < volsteps; r++)
@@ -139,7 +153,7 @@ Shader "Unlit/Lensing"
                         float3 p = from + s * dir * 0.5;
                         p = abs(((float3)tile) - glsl_mod(p, ((float3)tile*2.)));
                         float pa, a = pa = 0.;
-                        for (int i = 0; i < iterations; i++)
+                        for (int i = 0; i < _Iterations; i++)
                         {
                             p = abs(p) / dot(p, p) - formuparam;
                             a += abs(length(p) - pa);

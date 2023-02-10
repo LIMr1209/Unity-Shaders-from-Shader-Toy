@@ -250,8 +250,8 @@ Shader "Unlit/MagicParticles"
 
             float4 frag (v2f i) : SV_Target
             {
-                float2 fragCoord = i.uv * _Resolution;
-                float2 uv = fragCoord.xy/iResolution.xx;
+                float2 fragCoord = i.uv * iResolution;
+                float2 uv = fragCoord.xy/iResolution.xy;
                 float2 uv2 = fragCoord.xy/iResolution.xy;
                 float3 pcolor = tex2D(_MainTex, uv2).rgb*mb_factor;
                 pcolor += drawParticles(uv, 0.)*0.9;
