@@ -2102,7 +2102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 195a722b77944f15895bc731b795c355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shader: {fileID: 4800000, guid: 8c62184f54d441cf9f25596ca6f72766, type: 3}
+  shader: {fileID: 4800000, guid: ad2357f7b3434a9abbc5e011bb38e964, type: 3}
 --- !u!114 &238944520
 MonoBehaviour:
   m_ObjectHideFlags: 0

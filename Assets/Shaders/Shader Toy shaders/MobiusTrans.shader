@@ -4,10 +4,19 @@ Shader "Unlit/MobiusTrans"
     Properties
     {
         [Header(General)]
-        _MainTex ("iChannel0", 2D) = "white" {}
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
         [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
+
+        [Header(Extracted)]
+        _AnimSpeed("AnimSpeed", Range(0.1, 10)) = 1
+        _HueSpeed("HueSpeed", Range(0.1, 10)) = 1
+        _RotateSpeed("RotateSpeed", Range(0.1, 10)) = 1
+        [Toggle(_Transformation)]Transformation("Transformation (default = off)", Float) = 0
+        [Toggle(_Elliptic)]_Elliptic("Elliptic (default = off)", Float) = 0
+        [Toggle(_Hyperbolic)]_Hyperbolic("Hyperbolic (default = off)", Float) = 0
+        [Toggle(_Riemann)]_Riemann("Riemann (default = off)", Float) = 0
+
     }
     SubShader
     {
@@ -18,6 +27,10 @@ Shader "Unlit/MobiusTrans"
             #pragma fragment frag
 
             #include "UnityCG.cginc"
+            #pragma shader_feature_local_fragment _Transformation
+            #pragma shader_feature_local_fragment _Elliptic
+            #pragma shader_feature_local_fragment _Hyperbolic
+            #pragma shader_feature_local_fragment _Riemann
 
             struct appdata
             {
@@ -35,11 +48,9 @@ Shader "Unlit/MobiusTrans"
             float _GammaCorrect;
             float _Resolution;
             float _ScreenEffect;
-            sampler2D _MainTex;   float4 _MainTex_TexelSize;
 
             // GLSL Compatability macros
             #define glsl_mod(x,y) (((x)-(y)*floor((x)/(y))))
-            #define texelFetch(ch, uv, lod) tex2Dlod(ch, float4((uv).xy * ch##_TexelSize.xy + ch##_TexelSize.xy * 0.5, 0, lod))
             #define iResolution float3(_Resolution, _Resolution, _Resolution)
 
             v2f vert(appdata v)
@@ -50,6 +61,10 @@ Shader "Unlit/MobiusTrans"
                 return o;
             }
 
+            float _AnimSpeed;
+            float _HueSpeed;
+            float _RotateSpeed;
+
             #define PI 3.1415927
             #define E_ 2.7182817
             #define AA 1
@@ -57,8 +72,8 @@ Shader "Unlit/MobiusTrans"
             #define MAX_TRACE_STEPS 255
             #define PRECISION 0.00001
             #define FAR 100.
-            #define anim_speed (_Time.y*0.5)
-            #define hue_speed (_Time.y*0.3)
+            #define anim_speed (_Time.y*0.5*_AnimSpeed)
+            #define hue_speed (_Time.y*0.3*_HueSpeed)
             static const float2 polar_grid = float2(0.4, PI / 7.);
             static const float2 cone_angle = normalize(float2(1.5, 1.));
             static const float intensity_divisor = 40000.;
@@ -384,27 +399,34 @@ Shader "Unlit/MobiusTrans"
                 return color * (A * color + B) / (color * (C * color + D) + E);
             }
 
-            static const int CHAR_1 = 49;
-            static const int CHAR_2 = 50;
-            static const int CHAR_3 = 51;
-            static const int CHAR_4 = 52;
-
-            bool keypress(int code)
-            {
-                return texelFetch(_MainTex, int2(code, 2), 0).x != 0.;
-            }
 
             float4 frag(v2f i) : SV_Target
             {
                 float2 fragCoord = i.uv * _Resolution;
-                b_apply = !keypress(CHAR_1);
-                b_elliptic = !keypress(CHAR_2);
-                b_hyperbolic = !keypress(CHAR_3);
-                b_riemann = keypress(CHAR_4);
+                #if _Transformation
+                b_apply = false;
+                #else
+                b_apply = true;
+                #endif
+                #if _Elliptic
+                b_elliptic = false;
+                #else
+                b_elliptic = true;
+                #endif
+                #if _Hyperbolic
+                b_hyperbolic = false;
+                #else
+                b_hyperbolic = true;
+                #endif
+                #if _Riemann
+                b_riemann = true;
+                #else
+                b_riemann = false;
+                #endif
                 b_parabolic = !(b_elliptic || b_hyperbolic);
                 b_loxodromic = b_elliptic && b_hyperbolic;
                 float3 ro = float3(-2.4, 4.8, 7.);
-                ro.xz = rot2d(ro.xz, _Time.y * 0.3);
+                ro.xz = rot2d(ro.xz, _Time.y * 0.3 * _RotateSpeed);
                 float3 lookat = float3(0., 0.6, 0.);
                 float3 up = float3(0., 1., 0.);
                 float3 f = normalize(lookat - ro);
@@ -412,43 +434,44 @@ Shader "Unlit/MobiusTrans"
                 float3 u = normalize(cross(r, f));
                 float3 tot = ((float3)0);
                 float3 lp = ro + float3(0.2, 0.8, -0.2);
-                for (int ii = 0; ii < AA; ii++)
+                float2 offset = float2(float(0), float(0)) / float(AA);
+                float2 uv = (fragCoord + offset) / iResolution.xy;
+                uv = 2. * uv - 1.;
+                if (_ScreenEffect)
                 {
-                    for (int jj = 0; jj < AA; jj++)
-                    {
-                        float2 offset = float2(float(ii), float(jj)) / float(AA);
-                        float2 uv = (fragCoord + offset) / iResolution.xy;
-                        uv = 2. * uv - 1.;
-                        uv.x *= iResolution.x / iResolution.y;
-                        float3 rd = normalize(uv.x * r + uv.y * u + 4. * f);
-                        float2 p;
-                        float pint;
-                        float t = trace(ro, rd, p, pint);
-                        if (t >= 0.)
-                        {
-                            float3 col = tonemap(4. * getColor(p, pint));
-                            float3 pos = ro + rd * t;
-                            float3 nor = getNormal(pos);
-                            float3 ld = lp - pos;
-                            float dist = max(length(ld), 0.001);
-                            ld /= dist;
-                            float at = 2.2 / (1. + dist * 0.1 + dist * dist * 0.05);
-                            float ao = calcAO(pos, nor);
-                            float sh = softShadow(pos, ld, 0.04, dist, 8.);
-                            float diff = clamp(dot(nor, ld), 0., 1.);
-                            float spec = max(0., dot(reflect(-ld, nor), -rd));
-                            spec = pow(spec, 50.);
-                            tot += diff * 2.5 * col + float3(0.6, 0.8, 0.8) * spec * 2.;
-                            tot *= ao * sh * at;
-                        }
-
-                        if (t >= FAR)
-                            lp = normalize(lp - ro - rd * FAR);
-
-                        float3 bg = lerp(float3(0.5, 0.7, 1), float3(1, 0.5, 0.6), 0.5 - 0.5 * lp.y) * 0.3;
-                        tot = lerp(clamp(tot, 0., 1.), bg, smoothstep(0., FAR - 2., t));
-                    }
+                    uv.x *= _ScreenParams.x / _ScreenParams.y;
                 }
+                else
+                {
+                    uv.x *= iResolution.x / iResolution.y;
+                }
+                float3 rd = normalize(uv.x * r + uv.y * u + 4. * f);
+                float2 p;
+                float pint;
+                float t = trace(ro, rd, p, pint);
+                if (t >= 0.)
+                {
+                    float3 col = tonemap(4. * getColor(p, pint));
+                    float3 pos = ro + rd * t;
+                    float3 nor = getNormal(pos);
+                    float3 ld = lp - pos;
+                    float dist = max(length(ld), 0.001);
+                    ld /= dist;
+                    float at = 2.2 / (1. + dist * 0.1 + dist * dist * 0.05);
+                    float ao = calcAO(pos, nor);
+                    float sh = softShadow(pos, ld, 0.04, dist, 8.);
+                    float diff = clamp(dot(nor, ld), 0., 1.);
+                    float spec = max(0., dot(reflect(-ld, nor), -rd));
+                    spec = pow(spec, 50.);
+                    tot += diff * 2.5 * col + float3(0.6, 0.8, 0.8) * spec * 2.;
+                    tot *= ao * sh * at;
+                }
+
+                if (t >= FAR)
+                    lp = normalize(lp - ro - rd * FAR);
+
+                float3 bg = lerp(float3(0.5, 0.7, 1), float3(1, 0.5, 0.6), 0.5 - 0.5 * lp.y) * 0.3;
+                tot = lerp(clamp(tot, 0., 1.), bg, smoothstep(0., FAR - 2., t));
                 tot /= float(AA * AA);
                 float4 fragColor = float4(sqrt(clamp(tot, 0., 1.)), 1.);
                 if (_GammaCorrect) fragColor.rgb = pow(fragColor.rgb, 2.2);

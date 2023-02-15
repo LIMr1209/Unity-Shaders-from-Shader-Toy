@@ -7,6 +7,9 @@ Shader "Unlit/RaymarchingBasic"
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
         [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
+        
+        [Header(Extracted)]
+        _Speed("Speed", Range(0.1, 10)) = 1
     }
     SubShader
     {
@@ -47,6 +50,8 @@ Shader "Unlit/RaymarchingBasic"
                 return o;
             }
 
+
+            float _Speed;
             float map(float3 p)
             {
                 float3 n = float3(0, 1, 0);
@@ -68,10 +73,20 @@ Shader "Unlit/RaymarchingBasic"
 
             float4 frag(v2f i) : SV_Target
             {
-                float2 fragCoord = i.uv * _Resolution;
-                float time = _Time.y;
-                float2 uv = fragCoord.xy / iResolution.xy * 2. - 1.;
-                uv.x *= iResolution.x / iResolution.y;
+                float time = _Time.y * _Speed;
+                float2 uv;
+                if (_ScreenEffect)
+                {
+                    float2 fragCoord = i.uv * _ScreenParams;
+                    uv = fragCoord.xy / _ScreenParams.xy * 2. - 1.;
+                    uv.x *= _ScreenParams.x / _ScreenParams.y;
+                }
+                else
+                {
+                    float2 fragCoord = i.uv * iResolution;
+                    uv = fragCoord.xy / iResolution.xy * 2. - 1.;
+                    uv.x *= iResolution.x / iResolution.y;
+                }
                 float3 dir = normalize(float3(uv, 1.));
                 dir.xz = rot(dir.xz, time * 0.23);
                 dir = dir.yzx;

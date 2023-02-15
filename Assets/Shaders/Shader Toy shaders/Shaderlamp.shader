@@ -1,4 +1,4 @@
-﻿// https://www.shadertoy.com/view/Ml2XRD
+﻿// https://www.shadertoy.com/view/MdjyRm
 Shader "Unlit/Shaderlamp"
 {
     Properties
@@ -7,6 +7,12 @@ Shader "Unlit/Shaderlamp"
         [ToggleUI] _GammaCorrect ("Gamma Correction", Float) = 1
         _Resolution ("Resolution (Change if AA is bad)", Range(1, 1024)) = 1
         [ToggleUI] _ScreenEffect("ScreenEffect", Float) = 0
+        
+        [Header(Extracted)]
+        _Speed("Speed", Range(0.1, 10)) = 1
+        [Toggle(_Rings)]_Rings("Rings (default = off)", Float) = 0
+        [Toggle(_Polar)]_Polar("Polar (default = off)", Float) = 0
+        [Toggle(_Warp)]_Warp("Warp (default = off)", Float) = 0
     }
     SubShader
     {
@@ -17,6 +23,9 @@ Shader "Unlit/Shaderlamp"
             #pragma fragment frag
 
             #include "UnityCG.cginc"
+            #pragma shader_feature_local_fragment _Rings
+            #pragma shader_feature_local_fragment _Polar
+            #pragma shader_feature_local_fragment _Warp
 
             struct appdata
             {
@@ -47,9 +56,10 @@ Shader "Unlit/Shaderlamp"
                 return o;
             }
 
+            float _Speed;
             #define eps 0.005
             #define far 40.
-            #define time _Time.y*0.25
+            #define time _Time.y*0.25*_Speed
             #define PI 3.1415925
             #define PSD pow(abs(textureLod(_MainTex, ((float2)0.5), 0.).r), 2.)
 
@@ -82,13 +92,9 @@ Shader "Unlit/Shaderlamp"
             {
                 p.z += 0.2;
                 p += distort(p * distort(p)) * 0.1;
-                #ifdef audio
-                trap = dot(sin(p), 1.-abs(p-PSD))*1.2;
-                #else
                 trap = dot(sin(p), 1. - abs(p)) * 1.2;
-                #endif
                 float d = -sdTorus(p, float2(1., 0.7)) + distort(p) * 0.05;
-                #ifdef rings
+                #if _Rings
                 p.y -= 0.2;
                 for (int i = 0;i<3; i++)
                 {
@@ -121,15 +127,25 @@ Shader "Unlit/Shaderlamp"
 
             float4 frag(v2f i) : SV_Target
             {
-                float2 g = i.uv * _Resolution;
-                float2 R = iResolution.xy, u = (g + g - R) / R.y;
-                #ifdef audio
-                u *= sin(PSD*5.);
-                #endif
-                #ifdef polar
+                float2 g;
+                float2 R;
+                if (_ScreenEffect)
+                {
+                    g = i.uv * _ScreenParams;
+                    R = _ScreenParams.xy;
+                }
+
+                else
+                {
+                    g = i.uv * iResolution;
+                    R = iResolution.xy;
+                }
+
+                float2 u = (g + g - R) / R.y;
+                #ifdef _Polar
                 u = rotate(u, 2.*atan2(u.y, u.x)+time);
                 #endif
-                #ifdef warp
+                #ifdef _Warp
                 u = abs(u)/dot(u, u)-((float2)step(1., time));
                 #endif
                 float3 r = float3(0, 0, 1), d = normalize(float3(u, -1)), p, n, col;
